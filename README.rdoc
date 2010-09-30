@@ -1,0 +1,3 @@
+= inventory_manager
+
+Take your warehouse or office inventory on the same platform of your projects

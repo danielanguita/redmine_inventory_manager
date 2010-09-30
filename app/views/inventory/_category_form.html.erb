@@ -1,0 +1,15 @@
+<% labelled_tabular_form_for :inventory_category, @inventory_category,
+                             :url => {:action => 'categories', :id => @inventory_category},
+                             :html => {:id => 'category-form'} do |f| %>
+    <%= error_messages_for 'inventory_category' %>
+      <p>
+        <%= f.text_field :name, :size => 15, :required => true %>
+        <br/><%= f.text_field :description, :size => 100 %>
+        <% if params[:edit] %><input type='hidden' name='edit' value='<%= params[:edit] %>'/>
+        <% else %><input type='hidden' name='create' value='true'/><% end %>
+      </p>
+      <p>
+        <%= submit_tag l(:button_submit) %>
+        <% if params[:edit] %><input type='button' value='<%= l('Cancel') %>' onclick='location.href="categories"' /><% end %>
+      </p>
+<% end %>

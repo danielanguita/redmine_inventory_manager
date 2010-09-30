@@ -1,0 +1,21 @@
+<%= render_partial 'top_menu' %>
+<h2><%= l('inventory_warehouses') %></h2>
+<div class="box">
+    <h3 style='cursor:pointer;' onclick='$("iw_create_form").toggle();'>
+    <% if params[:edit] %><%= l('Edit') %><% else %><%= l('Create') %><% end%> <%= l('Warehouse') %>
+    </h3>
+    <div id='iw_create_form' <% if not params[:edit] and not params[:create] %>style='display:none;'<% end %>>
+      <%= render_partial 'warehouse_form' %>
+    </div>
+  </div>
+
+<table style='font-size:10px;border-collapse:collapse;'>
+  <tr><th>Id#</th><th>Nombre</th><th>Descripcion</th></tr>
+  <% @warehouses.each do |w| %>
+  <tr>
+    <td><%= w.id %></td><td><%= w.name %></td><td><%= w.location %></td>
+    <td><%= link_to image_tag('edit.png'), 'warehouses?edit='+w.id.to_s %></td>
+    <td><%= link_to image_tag('delete.png'), 'warehouses?delete='+w.id.to_s, :confirm => l('delete_confirmation') %></td>
+  </tr>
+  <% end %>
+</table>

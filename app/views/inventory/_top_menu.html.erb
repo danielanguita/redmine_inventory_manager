@@ -1,0 +1,13 @@
+<% content_for :header_tags do %>
+    <%= stylesheet_link_tag 'inventory', :plugin => 'redmine_inventory_manager' %>
+<% end %>
+<div id='inventory-menu'>
+<ul>
+  <li><%= link_to l('inventory_stock'), :action=> 'index' %></li>
+  <li><%= link_to l('inventory_movements'), :action=> 'movements' %></li>
+  <li><%= link_to l('inventory_parts'), :action=> 'parts' %></li>
+  <li><%= link_to l('inventory_categories'), :action=> 'categories' %></li>
+  <li><%= link_to l('inventory_warehouses'), :action=> 'warehouses' %></li>
+  <li><%= link_to l('inventory_providors'), :action=> 'providors' %></li>
+</ul>
+</div>

@@ -1,0 +1,15 @@
+<% labelled_tabular_form_for :inventory_warehouse, @inventory_warehouse,
+                             :url => {:action => 'warehouses', :id => @inventory_warehouse},
+                             :html => {:id => 'warehouse-form'} do |f| %>
+    <%= error_messages_for 'inventory_warehouse' %>
+      <p>
+        <%= f.text_field :name, :size => 15, :required => true %>
+        <br/><%= f.text_field :location, :size => 100 %>
+        <% if params[:edit] %><input type='hidden' name='edit' value='<%= params[:edit] %>'/>
+        <% else %><input type='hidden' name='create' value='true'/><% end %>
+      </p>
+      <p>
+        <%= submit_tag l(:button_submit) %>
+        <% if params[:edit] %><input type='button' value='<%= l('Cancel') %>' onclick='location.href="warehouses"' /><% end %>
+      </p>
+<% end %>

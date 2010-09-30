@@ -1,0 +1,65 @@
+<%= render_partial 'top_menu' %>
+<h2><%= l(:inventory_movements) %></h2>
+<table style='width:100%'>
+<tr><td valign='top'>
+<div class="box">
+    <h3 style='cursor:pointer;' onclick='$("ip_create_in_form").toggle();'>
+    <% if params[:edit_in] %><%= l('Edit') %><% else %><%= l('Create') %><% end%> <%= l('input_movements') %>
+    </h3>
+    <div id='ip_create_in_form' <% if not params[:edit_in] and not params[:create_in] %>style='display:none;'<% end %>>
+      <%= render_partial 'movement_in_form' %>
+    </div>
+  </div>
+
+<table style='font-size:10px;border-collapse:collapse;'>
+  <tr><th>Id#</th><th>Part#</th><th>De</th><th>Cant.</th><th>$</th><th>Doc.</th><th>Fecha</th></tr>
+  <% @movements_in.each do |p| %>
+  <tr>
+    <td><%= p.id %></td><td><%= p.inventory_part.part_number %></td>
+    <td>
+    <% if p.user_from_id %>
+    <%= User.find(p.user_from_id).login %>
+    <% elsif p.inventory_providor %>
+    <%= p.inventory_providor.name %>
+    <% elsif p.warehouse_from_id %>
+    <%= InventoryWarehouse.find(p.warehouse_from_id).name %>
+    <% end %>
+    </td>
+    <td align='right'><%= p.quantity %></td>
+    <td align='right'><%= number_to_currency(p.value) %></td>
+    <td align='right'><%= p.document %></td><td><%= p.date.strftime("%Y-%m-%d") %></td>
+    <td><%= link_to image_tag('edit.png'), 'movements?edit_in='+p.id.to_s %></td>
+    <td><%= link_to image_tag('delete.png'), 'movements?delete='+p.id.to_s, :confirm => l('delete_confirmation') %></td>
+  </tr>
+  <% end %>
+</table>
+</td><td valign='top'>
+<div class="box">
+    <h3 style='cursor:pointer;' onclick='$("ip_create_out_form").toggle();'>
+    <% if params[:edit_out] %><%= l('Edit') %><% else %><%= l('Create') %><% end%> <%= l('output_movements') %>
+    </h3>
+    <div id='ip_create_out_form' <% if not params[:edit_out] and not params[:create_out] %>style='display:none;'<% end %>>
+      <%= render_partial 'movement_out_form' %>
+    </div>
+  </div>
+
+<table style='font-size:10px;border-collapse:collapse;'>
+  <tr><th>Id#</th><th>Part#</th><th>Para</th><th>Cant.</th><th>Doc.</th><th>Fecha</th></tr>
+  <% @movements_out.each do |p| %>
+  <tr>
+    <td><%= p.id %></td><td><%= p.inventory_part.part_number %></td>
+    <td>
+    <% if p.user_to_id %>
+    <%= User.find(p.user_to_id).login %>
+    <% elsif p.project %>
+    <%= p.project.name %>
+    <% end %>
+    </td>
+    <td align='right'><%= p.quantity %></td>
+    <td align='right'><%= p.document %></td><td><%= p.date %></td>
+    <td><%= link_to image_tag('edit.png'), 'movements?edit_out='+p.id.to_s %></td>
+    <td><%= link_to image_tag('delete.png'), 'movements?delete='+p.id.to_s, :confirm => l('delete_confirmation') %></td>
+  </tr>
+  <% end %>
+</table>
+</td></tr></table>

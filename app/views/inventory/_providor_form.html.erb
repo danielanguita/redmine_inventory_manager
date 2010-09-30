@@ -1,0 +1,27 @@
+<% labelled_tabular_form_for :inventory_providor, @inventory_providor,
+                             :url => {:action => 'providors', :id => @inventory_providor},
+                             :html => {:id => 'providor-form'} do |f| %>
+    <%= error_messages_for 'inventory_providor' %>
+      <p>
+        <%= f.text_field :identification, :size => 20, :required => true %>
+        <br/><%= f.text_field :name, :size => 30, :required => true %>
+        <br/><%= f.text_field :address0, :size => 30 %>
+        <br/><%= f.text_field :address1, :size => 30 %>
+        <br/><%= f.text_field :city, :size => 20 %>
+        <br/><%= f.text_field :state, :size => 20 %>
+        <br/><%= f.text_field :country, :size => 20 %>
+        <br/><%= f.text_field :phone0, :size => 10 %>
+        <br/><%= f.text_field :phone1, :size => 10 %>
+        <br/><%= f.text_field :fax, :size => 10 %>
+        <br/><%= f.text_field :business, :size => 40 %>
+        <br/><%= f.text_field :email, :size => 20 %>
+        <br/><%= f.text_field :contact0, :size => 20 %>
+        <br/><%= f.text_field :contact1, :size => 20 %>
+        <% if params[:edit] %><input type='hidden' name='edit' value='<%= params[:edit] %>'/>
+        <% else %><input type='hidden' name='create' value='true'/><% end %>
+      </p>
+      <p>
+        <%= submit_tag l(:button_submit) %>
+        <% if params[:edit] %><input type='button' value='<%= l('Cancel') %>' onclick='location.href="providors"' /><% end %>
+      </p>
+<% end %>
