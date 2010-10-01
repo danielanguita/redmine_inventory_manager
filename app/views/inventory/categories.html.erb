@@ -1,6 +1,7 @@
 <%= render_partial 'top_menu' %>
 <h2><%= l('inventory_categories') %></h2>
-<div class="box">
+<% if @has_permission %>
+  <div class="box">
     <h3 style='cursor:pointer;' onclick='$("ic_create_form").toggle();'>
     <% if params[:edit] %><%= l('Edit') %><% else %><%= l('Create') %><% end%> <%= l('Category') %>
     </h3>
@@ -8,14 +9,17 @@
       <%= render_partial 'category_form' %>
     </div>
   </div>
+<% end %>
 
 <table style='font-size:10px;border-collapse:collapse;'>
   <tr><th>Id#</th><th>Nombre</th><th>Descripcion</th></tr>
   <% @categories.each do |c| %>
   <tr>
     <td><%= c.id %></td><td><%= c.name %></td><td><%= c.description %></td>
+  <% if @has_permission %>
     <td><%= link_to image_tag('edit.png'), 'categories?edit='+c.id.to_s %></td>
     <td><%= link_to image_tag('delete.png'), 'categories?delete='+c.id.to_s, :confirm => l('delete_confirmation') %></td>
+  <% end %>
   </tr>
   <% end %>
 </table>

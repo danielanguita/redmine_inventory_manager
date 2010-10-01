@@ -17,7 +17,7 @@
   
   function update_default_value(part_number_id)
   {
-    new Ajax.Request('ajax_get_part_value',{
+    new Ajax.Request('/inventory/ajax_get_part_value',{
         method:'post',
         parameters:'part_id='+part_number_id,
         onSuccess:function(t){

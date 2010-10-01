@@ -1,6 +1,7 @@
 <%= render_partial 'top_menu' %>
 <h2><%= l('inventory_warehouses') %></h2>
-<div class="box">
+<% if @has_permission %>
+  <div class="box">
     <h3 style='cursor:pointer;' onclick='$("iw_create_form").toggle();'>
     <% if params[:edit] %><%= l('Edit') %><% else %><%= l('Create') %><% end%> <%= l('Warehouse') %>
     </h3>
@@ -8,14 +9,17 @@
       <%= render_partial 'warehouse_form' %>
     </div>
   </div>
+<% end %>
 
 <table style='font-size:10px;border-collapse:collapse;'>
-  <tr><th>Id#</th><th>Nombre</th><th>Descripcion</th></tr>
+  <tr><th>Id#</th><th>Nombre</th><th>Descripcion</th><th>Administrador</th></tr>
   <% @warehouses.each do |w| %>
   <tr>
-    <td><%= w.id %></td><td><%= w.name %></td><td><%= w.location %></td>
+    <td><%= w.id %></td><td><%= w.name %></td><td><%= w.location %></td><td><%= User.find(w.user_manager_id).login rescue "s/a" %></td>
+  <% if @has_permission %>
     <td><%= link_to image_tag('edit.png'), 'warehouses?edit='+w.id.to_s %></td>
     <td><%= link_to image_tag('delete.png'), 'warehouses?delete='+w.id.to_s, :confirm => l('delete_confirmation') %></td>
+  <% end %>
   </tr>
   <% end %>
 </table>

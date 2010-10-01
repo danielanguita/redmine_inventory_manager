@@ -99,6 +99,19 @@ class InventoryController < ApplicationController
     return @stock[5].to_f rescue 0
   end
 
+  def user_has_warehouse_permission(user_id, warehouse_id)
+    if warehouse_id == nil
+      if InventoryWarehouse.count(:conditions => "user_manager_id = " + user_id.to_s) > 0
+        return true
+      end
+    else
+      if InventoryWarehouse.count(:conditions => ["user_manager_id = "+user_id.to_s+" and id = "+warehouse_id.to_s]) > 0
+        return true
+      end
+    end
+    return false
+  end
+
   def movements
     @parts = InventoryPart.find(:all, :order => 'part_number').map {|p| [p.part_number,p.id]}
     @providors = InventoryProvidor.find(:all, :order => 'name').map {|p| [p.name,p.id]}
@@ -107,6 +120,8 @@ class InventoryController < ApplicationController
     @warehouses = InventoryWarehouse.find(:all, :order => 'name').map {|w| [w.name, w.id]}
     @from_options = {l('User') => 'user_from_id', l('Warehouse') => 'warehouse_from_id', l('Providor') => 'inventory_providor_id'}
     @to_options = {l('User') => 'user_to_id', l('Project') => 'project_id'}
+    current_user = find_current_user
+    @has_permission = current_user.admin? || user_has_warehouse_permission(current_user.id, nil)
     
     unless params[:from_options]
       params[:from_options] = 'user_from_id'
@@ -117,9 +132,16 @@ class InventoryController < ApplicationController
     end
     
     if params[:delete]
-      ok = InventoryMovement.delete(params[:delete]) rescue false
-      unless ok
-        flash[:error] = l('cant_delete_register')
+      mdel = InventoryMovement.find(params[:delete]) rescue false
+      if mdel
+        if current_user.admin? or user_has_warehouse_permission(current_user.id, (mdel.warehouse_from_id != nil ? mdel.warehouse_from_id : 0)) or user_has_warehouse_permission(current_user.id, (mdel.warehouse_to_id != nil ? mdel.warehouse_to_id : 0))
+          ok = InventoryMovement.delete(mdel) rescue false
+          unless ok
+            flash[:error] = l('cant_delete_register')
+          end
+        else
+          flash[:error] = l('permission_denied')
+        end
       end
     end
     
@@ -137,22 +159,26 @@ class InventoryController < ApplicationController
     end
     
     if params[:inventory_in_movement]
-      unless params[:edit_in]
-        @inventory_in_movement = InventoryMovement.new(params[:inventory_in_movement]) 
-        @inventory_in_movement.user_id = find_current_user.id
-        @inventory_in_movement.date = DateTime.now
-        if @inventory_in_movement.save
-          @inventory_in_movement = InventoryMovement.new(params[:inventory_in_movement])
-          @inventory_in_movement.inventory_part = nil
-          @inventory_in_movement.serial_number = nil
-          @inventory_in_movement.quantity = nil
-          @inventory_in_movement.value = nil
-          params[:create_in]  = true
+      if current_user.admin? or (user_has_warehouse_permission(current_user.id, params[:inventory_in_movement][:warehouse_to_id]) and (@inventory_in_movement.warehouse_to_id == nil ? true : user_has_warehouse_permission(current_user.id, @inventory_in_movement.warehouse_to_id)))
+        unless params[:edit_in]
+          @inventory_in_movement = InventoryMovement.new(params[:inventory_in_movement]) 
+          @inventory_in_movement.user_id = current_user.id
+          @inventory_in_movement.date = DateTime.now
+          if @inventory_in_movement.save
+            @inventory_in_movement = InventoryMovement.new(params[:inventory_in_movement])
+            @inventory_in_movement.inventory_part = nil
+            @inventory_in_movement.serial_number = nil
+            @inventory_in_movement.quantity = nil
+            @inventory_in_movement.value = nil
+            params[:create_in]  = true
+          end
+        else
+          if @inventory_in_movement.update_attributes(params[:inventory_in_movement])
+            params[:edit_in] = false
+          end
         end
       else
-        if @inventory_in_movement.update_attributes(params[:inventory_in_movement])
-          params[:edit_in] = false
-        end
+        flash[:error] = l('permission_denied')
       end
     end
     
@@ -168,38 +194,42 @@ class InventoryController < ApplicationController
     end
     
     if params[:inventory_out_movement]
-      unless params[:edit_out]
-        @inventory_out_movement = InventoryMovement.new(params[:inventory_out_movement]) 
-        available_stock = check_available_stock(@inventory_out_movement)
-        if @inventory_out_movement.quantity <= available_stock
-          @inventory_out_movement.user_id = find_current_user.id
-          @inventory_out_movement.date = DateTime.now
-          if @inventory_out_movement.save
-            @inventory_out_movement = InventoryMovement.new(params[:inventory_out_movement])
-            @inventory_out_movement.inventory_part = nil
-            @inventory_out_movement.serial_number = nil
-            @inventory_out_movement.quantity = nil
-            @inventory_out_movement.value = nil
-            params[:create_out]  = true
+      if current_user.admin? or (user_has_warehouse_permission(current_user.id, params[:inventory_out_movement][:warehouse_from_id]) and (@inventory_out_movement.warehouse_from_id == nil ? true : user_has_warehouse_permission(current_user.id, @inventory_out_movement.warehouse_from_id)))
+        unless params[:edit_out]
+          @inventory_out_movement = InventoryMovement.new(params[:inventory_out_movement]) 
+          available_stock = check_available_stock(@inventory_out_movement)
+          if @inventory_out_movement.quantity <= available_stock
+            @inventory_out_movement.user_id = current_user.id
+            @inventory_out_movement.date = DateTime.now
+            if @inventory_out_movement.save
+              @inventory_out_movement = InventoryMovement.new(params[:inventory_out_movement])
+              @inventory_out_movement.inventory_part = nil
+              @inventory_out_movement.serial_number = nil
+              @inventory_out_movement.quantity = nil
+              @inventory_out_movement.value = nil
+              params[:create_out]  = true
+            end
+          else
+            flash[:error] = l('out_of_stock')
           end
         else
-          flash[:error] = l('out_of_stock')
+          ok = true
+          if @inventory_out_movement.quantity < params[:inventory_out_movement][:quantity].to_f
+            available_stock = check_available_stock(@inventory_out_movement)
+            unless (params[:inventory_out_movement][:quantity].to_f - @inventory_out_movement.quantity) <= available_stock
+              ok = false
+            end
+          end
+          if ok
+            if @inventory_out_movement.update_attributes(params[:inventory_out_movement])
+              params[:edit_out] = false
+            end
+          else
+            flash[:error] = l('out_of_stock')
+          end
         end
       else
-        ok = true
-        if @inventory_out_movement.quantity < params[:inventory_out_movement][:quantity].to_f
-          available_stock = check_available_stock(@inventory_out_movement)
-          unless (params[:inventory_out_movement][:quantity].to_f - @inventory_out_movement.quantity) <= available_stock
-            ok = false
-          end
-        end
-        if ok
-          if @inventory_out_movement.update_attributes(params[:inventory_out_movement])
-            params[:edit_out] = false
-          end
-        else
-          flash[:error] = l('out_of_stock')
-        end
+        flash[:error] = l('permission_denied')
       end
     end
 
@@ -208,25 +238,36 @@ class InventoryController < ApplicationController
   end
 
   def categories
-    if params[:delete]
-      ok = InventoryCategory.delete(params[:delete]) rescue false
-      unless ok
-        flash[:error] = l('cant_delete_register')
-      end
-    end
+    current_user = find_current_user
+    @has_permission = current_user.admin? || user_has_warehouse_permission(current_user.id, nil)
     
-    if params[:edit]
-      @inventory_category = InventoryCategory.find(params[:edit])
-    else
-      @inventory_category = InventoryCategory.new
-    end
-    
-    if params[:inventory_category]
-      @inventory_category.update_attributes(params[:inventory_category]) 
-      if @inventory_category.save
-        @inventory_category = InventoryCategory.new
-        params[:edit] = false
-        params[:create]  = false
+    if params[:delete] or params[:edit] or params[:inventory_warehouse]
+      if @has_permission
+        
+        if params[:delete]
+          ok = InventoryCategory.delete(params[:delete]) rescue false
+          unless ok
+            flash[:error] = l('cant_delete_register')
+          end
+        end
+        
+        if params[:edit]
+          @inventory_category = InventoryCategory.find(params[:edit])
+        else
+          @inventory_category = InventoryCategory.new
+        end
+        
+        if params[:inventory_category]
+          @inventory_category.update_attributes(params[:inventory_category]) 
+          if @inventory_category.save
+            @inventory_category = InventoryCategory.new
+            params[:edit] = false
+            params[:create]  = false
+          end
+        end
+        
+      else
+        flash[:error] = l('permission_denied')
       end
     end
     
@@ -235,77 +276,105 @@ class InventoryController < ApplicationController
 
   def parts
     @categories = InventoryCategory.find(:all, :order => 'name').map {|c| [c.name,c.id]}
-    if params[:delete]
-      ok = InventoryPart.delete(params[:delete]) rescue false
-      unless ok
-        flash[:error] = l('cant_delete_register')
+    current_user = find_current_user
+    @has_permission = current_user.admin? || user_has_warehouse_permission(current_user.id, nil)
+    if params[:delete] or params[:edit] or params[:inventory_warehouse]
+      if @has_permission
+    
+        if params[:delete]
+          ok = InventoryPart.delete(params[:delete]) rescue false
+          unless ok
+            flash[:error] = l('cant_delete_register')
+          end
+        end
+        
+        if params[:edit]
+          @inventory_part = InventoryPart.find(params[:edit])
+        else
+          @inventory_part = InventoryPart.new
+        end
+        
+        if params[:inventory_part]
+          @inventory_part.update_attributes(params[:inventory_part]) 
+          if @inventory_part.save
+            @inventory_part = InventoryPart.new
+            params[:edit] = false
+            params[:create]  = false
+          end
+        end
+        
+      else
+        flash[:error] = l('permission_denied')
       end
     end
-    
-    if params[:edit]
-      @inventory_part = InventoryPart.find(params[:edit])
-    else
-      @inventory_part = InventoryPart.new
-    end
-    
-    if params[:inventory_part]
-      @inventory_part.update_attributes(params[:inventory_part]) 
-      if @inventory_part.save
-        @inventory_part = InventoryPart.new
-        params[:edit] = false
-        params[:create]  = false
-      end
-    end
-
     @parts = InventoryPart.find(:all)
   end
   
   def providors
-    if params[:delete]
-      ok = InventoryProvidor.delete(params[:delete]) rescue false
-      unless ok
-        flash[:error] = l('cant_delete_register')
+    current_user = find_current_user
+    @has_permission = current_user.admin? || user_has_warehouse_permission(current_user.id, nil)
+    if params[:delete] or params[:edit] or params[:inventory_warehouse]
+      if @has_permission
+        
+        if params[:delete]
+          ok = InventoryProvidor.delete(params[:delete]) rescue false
+          unless ok
+            flash[:error] = l('cant_delete_register')
+          end
+        end
+        
+        if params[:edit]
+          @inventory_providor = InventoryProvidor.find(params[:edit])
+        else
+          @inventory_providor = InventoryProvidor.new
+        end
+        
+        if params[:inventory_providor]
+          @inventory_providor.update_attributes(params[:inventory_providor]) 
+          if @inventory_providor.save
+            @inventory_providor = InventoryProvidor.new
+            params[:edit] = false
+            params[:create]  = false
+          end
+        end
+        
+      else
+        flash[:error] = l('permission_denied')
       end
     end
     
-    if params[:edit]
-      @inventory_providor = InventoryProvidor.find(params[:edit])
-    else
-      @inventory_providor = InventoryProvidor.new
-    end
-    
-    if params[:inventory_providor]
-      @inventory_providor.update_attributes(params[:inventory_providor]) 
-      if @inventory_providor.save
-        @inventory_providor = InventoryProvidor.new
-        params[:edit] = false
-        params[:create]  = false
-      end
-    end
     
     @providors = InventoryProvidor.find(:all)
   end
   
   def warehouses
-    if params[:delete]
-      ok = InventoryWarehouse.delete(params[:delete]) rescue false
-      unless ok
-        flash[:error] = l('cant_delete_register')
-      end
-    end
-    
-    if params[:edit]
-      @inventory_warehouse = InventoryWarehouse.find(params[:edit])
-    else
-      @inventory_warehouse = InventoryWarehouse.new
-    end
-    
-    if params[:inventory_warehouse]
-      @inventory_warehouse.update_attributes(params[:inventory_warehouse]) 
-      if @inventory_warehouse.save
-        @inventory_warehouse = InventoryWarehouse.new
-        params[:edit] = false
-        params[:create]  = false
+    @users = User.find(:all, :conditions => 'status=1' , :order => 'lastname ASC, firstname ASC').map {|u| [u.lastname+" "+u.firstname, u.id]}
+    @has_permission = find_current_user.admin?
+    if params[:delete] or params[:edit] or params[:inventory_warehouse]
+      if @has_permission
+        if params[:delete]
+          ok = InventoryWarehouse.delete(params[:delete]) rescue false
+          unless ok
+            flash[:error] = l('cant_delete_register')
+          end
+        end
+        
+        if params[:edit]
+          @inventory_warehouse = InventoryWarehouse.find(params[:edit])
+        else
+          @inventory_warehouse = InventoryWarehouse.new
+        end
+          
+        if params[:inventory_warehouse]
+          @inventory_warehouse.update_attributes(params[:inventory_warehouse]) 
+          if @inventory_warehouse.save
+            @inventory_warehouse = InventoryWarehouse.new
+            params[:edit] = false
+            params[:create]  = false
+          end
+        end
+      else
+        flash[:error] = l('permission_denied')
       end
     end
     

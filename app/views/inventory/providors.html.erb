@@ -1,6 +1,7 @@
 <%= render_partial 'top_menu' %>
 <h2><%= l('inventory_providors') %></h2>
-<div class="box">
+<% if @has_permission %>
+  <div class="box">
     <h3 style='cursor:pointer;' onclick='$("ip_create_form").toggle();'>
     <% if params[:edit] %><%= l('Edit') %><% else %><%= l('Create') %><% end%> <%= l('Providor') %>
     </h3>
@@ -8,6 +9,7 @@
       <%= render_partial 'providor_form' %>
     </div>
   </div>
+<% end %>
 
 <table style='font-size:10px;border-collapse:collapse;'>
   <tr><th>Id#</th><th>Id</th><th>Razon Social</th><th>Direccion</th><th>Telefono</th></tr>
@@ -16,8 +18,10 @@
     <td><%= p.id %></td><td><%= p.identification %></td><td><%= p.name %></td>
     <td><%= p.address0 %>, <%= p.address1 %>, <%= p.city %></td>
     <td><%= p.phone0 %> - <%= p.phone1 %></td>
+  <% if @has_permission %>
     <td><%= link_to image_tag('edit.png'), 'providors?edit='+p.id.to_s %></td>
     <td><%= link_to image_tag('delete.png'), 'providors?delete='+p.id.to_s, :confirm => l('delete_confirmation') %></td>
+  <% end %>
   </tr>
   <% end %>
 </table>

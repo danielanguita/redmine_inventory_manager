@@ -5,6 +5,7 @@
       <p>
         <%= f.text_field :name, :size => 15, :required => true %>
         <br/><%= f.text_field :location, :size => 100 %>
+        <br/><%= f.select :user_manager_id, @users %>
         <% if params[:edit] %><input type='hidden' name='edit' value='<%= params[:edit] %>'/>
         <% else %><input type='hidden' name='create' value='true'/><% end %>
       </p>

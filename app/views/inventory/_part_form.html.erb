@@ -7,6 +7,7 @@
         <br/><%= f.text_field :manufacturer, :size => 30, :required => true %>
         <br/><%= f.select(:inventory_category_id, @categories, {:include_blank => false}) %>
         <br/><%= f.text_field :description, :size => 30 %>
+        <br/><%= f.text_field :where, :size => 30 %>
         <br/><%= f.text_field :value, :size => 6 %>
         <br/><%= f.text_field :status, :size => 2 %>
         <% if params[:edit] %><input type='hidden' name='edit' value='<%= params[:edit] %>'/>
