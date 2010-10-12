@@ -18,14 +18,14 @@ class InventoryController < ApplicationController
     end
     
     @stock = sql.execute("SELECT in_movements.part_number as part_number,
-          in_movements.serial_number as serial_number,
+          in_movements.serial_number as serial_number, in_movements.part_description as description,
           in_movements.value,
           IFNULL(in_movements.quantity,0) as input,
           IFNULL(out_movements.quantity,0) as output,
           (IFNULL(in_movements.quantity,0)-IFNULL(out_movements.quantity,0)) as stock,
           GREATEST(IFNULL(in_movements.last_date,0), IFNULL(out_movements.last_date,0)) as last_movement
             FROM
-        (SELECT `inventory_parts`.`part_number` AS `part_number`,`inventory_movements`.`serial_number` AS `serial_number`,
+        (SELECT `inventory_parts`.`part_number` AS `part_number`, `inventory_movements`.`serial_number` AS `serial_number`,
             `inventory_parts`.`value` AS `value`,sum(`inventory_movements`.`quantity`) AS `quantity`,
             max(`inventory_movements`.`date`) AS `last_date`
               FROM (`inventory_parts`
@@ -35,7 +35,7 @@ class InventoryController < ApplicationController
                       GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`
                       ORDER BY `inventory_parts`.`part_number`) as out_movements
               RIGHT JOIN
-        (SELECT `inventory_parts`.`part_number` AS `part_number`,`inventory_movements`.`serial_number` AS `serial_number`,
+        (SELECT `inventory_parts`.`part_number` AS `part_number`,`inventory_parts`.`description` AS `part_description`,`inventory_movements`.`serial_number` AS `serial_number`,
             `inventory_parts`.`value` AS `value`,sum(`inventory_movements`.`quantity`) AS `quantity`,
             max(`inventory_movements`.`date`) AS `last_date`
               FROM (`inventory_parts`
@@ -56,6 +56,16 @@ class InventoryController < ApplicationController
       end
     end
     render :text => out
+  end
+  
+  def ajax_get_part_info
+    out = []
+    if params[:part_number]
+      if part = InventoryPart.find(:first, :conditions => "part_number = '"+params[:part_number]+"'")
+        out =  part.to_json
+      end
+    end
+    render :json => out
   end
 
   def check_available_stock(movement)
@@ -233,15 +243,15 @@ class InventoryController < ApplicationController
       end
     end
 
-    @movements_in = InventoryMovement.find(:all, :conditions => "project_id is null and user_to_id is null", :order => "date DESC", :limit => 100)
-    @movements_out = InventoryMovement.find(:all, :conditions => "inventory_providor_id is null and user_from_id is null and (project_id is not null or user_to_id is not null)", :order => "date DESC", :limit => 100)
+    @movements_in = InventoryMovement.find(:all, :conditions => "project_id is null and user_to_id is null", :order => "date DESC")
+    @movements_out = InventoryMovement.find(:all, :conditions => "inventory_providor_id is null and user_from_id is null and (project_id is not null or user_to_id is not null)", :order => "date DESC")
   end
 
   def categories
     current_user = find_current_user
     @has_permission = current_user.admin? || user_has_warehouse_permission(current_user.id, nil)
     
-    if params[:delete] or params[:edit] or params[:inventory_warehouse]
+    if params[:delete] or params[:edit] or params[:inventory_category]
       if @has_permission
         
         if params[:delete]
@@ -278,7 +288,7 @@ class InventoryController < ApplicationController
     @categories = InventoryCategory.find(:all, :order => 'name').map {|c| [c.name,c.id]}
     current_user = find_current_user
     @has_permission = current_user.admin? || user_has_warehouse_permission(current_user.id, nil)
-    if params[:delete] or params[:edit] or params[:inventory_warehouse]
+    if params[:delete] or params[:edit] or params[:inventory_part]
       if @has_permission
     
         if params[:delete]
@@ -313,7 +323,7 @@ class InventoryController < ApplicationController
   def providors
     current_user = find_current_user
     @has_permission = current_user.admin? || user_has_warehouse_permission(current_user.id, nil)
-    if params[:delete] or params[:edit] or params[:inventory_warehouse]
+    if params[:delete] or params[:edit] or params[:inventory_providor]
       if @has_permission
         
         if params[:delete]

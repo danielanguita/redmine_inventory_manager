@@ -14,11 +14,24 @@
 <% end %>
 
 <h3>Lista de Entradas</h3>
+<script>
+  function show_part_info(part_number)
+  {
+    new Ajax.Request("/inventory/ajax_get_part_info",{
+                          method:"post",
+                          parameters:"part_number="+part_number,
+                          onSuccess:function(t){
+                            var value = t.responseJSON;
+                            alert(value.inventory_part.description);
+                          }
+                      });
+  }
+</script>
 <table style='font-size:10px;border-collapse:collapse;'>
   <tr><th>Id#</th><th>Part#</th><th>De</th><th>Bodega</th><th>Cant.</th><th>$</th><th>Doc.</th><th>Fecha</th></tr>
   <% @movements_in.each do |p| %>
   <tr>
-    <td><%= p.id %></td><td><%= p.inventory_part.part_number %></td>
+    <td><%= p.id %></td><td><a href='javascript:show_part_info("<%= p.inventory_part.part_number %>");'><%= p.inventory_part.part_number %></a></td>
     <td>
     <% if p.user_from_id %>
     <%= User.find(p.user_from_id).login %>
@@ -56,7 +69,8 @@
   <tr><th>Id#</th><th>Part#</th><th>Bodega</th><th>Para</th><th>Cant.</th><th>Doc.</th><th>Fecha</th></tr>
   <% @movements_out.each do |p| %>
   <tr>
-    <td><%= p.id %></td><td><%= p.inventory_part.part_number %></td>
+    <td><%= p.id %></td>
+    <td><a href='javascript:show_part_info("<%= p.inventory_part.part_number %>");'><%= p.inventory_part.part_number %></a></td>
     <td><%= InventoryWarehouse.find(p.warehouse_from_id).name rescue "" %></td>
     <td>
     <% if p.user_to_id %>

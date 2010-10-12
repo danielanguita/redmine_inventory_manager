@@ -10,4 +10,5 @@ class InventoryPart < ActiveRecord::Base
   belongs_to :inventory_category
   
   validates_presence_of :part_number, :inventory_category, :value, :status
+  validates_uniqueness_of :part_number
 end

@@ -5,24 +5,25 @@
   <%= select_tag(:warehouse, options_for_select(@warehouses,params[:warehouse]),{:onchange=>'submit();'}) %>
 </form>
 <table id='inventory_stock' cellspacing='0' cellpadding='4' border='1' style='border: 1px solid black;font-size:10px;border-collapse:collapse;'>
-  <tr><th>Part#</th><th>Valor</th><th>Entrada</th><th>Salida</th><th>Stock</th><th>Útimo Movimiento</th><th>Total</th></tr>
+  <tr><th>Part#</th><th>Descripcion</th><th>Valor</th><th>Entrada</th><th>Salida</th><th>Stock</th><th>Útimo Movimiento</th><th>Total</th></tr>
    <% 
    total = 0
    while s = @stock.fetch_row %>
   <tr>
    <td><%= s[0] %><% if s[1] and s[1].length > 0 %> (<%= s[1] %>)<% end %></td>
-   <td align='right'><%= number_to_currency(s[2]) %></td>
-   <td align='right'><%= s[3] %></td>
+   <td><%= s[2] %></td>
+   <td align='right'><%= number_to_currency(s[3]) %></td>
    <td align='right'><%= s[4] %></td>
-   <td align='right'><b><%= s[5] %></b></td>
-   <td><%= s[6] %></td>
-   <td align='right'><%= number_to_currency(s[2].to_f*s[5].to_f) %></td>
+   <td align='right'><%= s[5] %></td>
+   <td align='right'><b><%= s[6] %></b></td>
+   <td><%= s[7] %></td>
+   <td align='right'><%= number_to_currency(s[3].to_f*s[6].to_f) %></td>
   </tr>
    <% 
-    total += s[2].to_f*s[5].to_f 
+    total += s[3].to_f*s[6].to_f 
    end %>
    <tr>
-    <th colspan="6" align="right">Inventario Valorizado:</th>
+    <th colspan="7" align="right">Inventario Valorizado:</th>
     <th align="right"><%= number_to_currency(total) %></th>
    </tr>
 </table>

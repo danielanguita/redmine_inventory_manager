@@ -12,11 +12,12 @@
 <% end %>
 
 <table style='font-size:10px;border-collapse:collapse;'>
-  <tr><th>Id#</th><th>Part#</th><th>Marca</th><th>Categoria</th><th>Valor</th><th>Estado</th></tr>
+  <tr><th>Id#</th><th>Part#</th><th>Marca</th><th>Descripcion</th><th>Categoria</th><th>Valor</th><th>Estado</th></tr>
   <% @parts.each do |p| %>
   <tr>
-    <td><%= p.id %></td><td><%= p.part_number %></td><td><%= p.manufacturer %></td>
-    <td><%= p.inventory_category.name %></td><td><%= number_to_currency(p.value) %></td><td><%= p.status %></td>
+    <td><%= p.id %></td><td><%= p.part_number %></td><td><%= p.manufacturer %></td><td><%= p.description %></td>
+    <td><%= p.inventory_category.name %></td><td><%= number_to_currency(p.value) %></td>
+    <td><%= (p.status == 1 ? "Vigente" : "Obsoleto") %></td>
   <% if @has_permission %> 
     <td><%= link_to image_tag('edit.png'), 'parts?edit='+p.id.to_s %></td>
     <td><%= link_to image_tag('delete.png'), 'parts?delete='+p.id.to_s, :confirm => l('delete_confirmation') %></td>
