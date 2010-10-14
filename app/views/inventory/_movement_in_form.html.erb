@@ -32,7 +32,7 @@
                              :html => {:id => 'part-in-form'} do |f| %>
     <%= error_messages_for 'inventory_in_movement' %>
       <p>
-        <label>Parte proviene de</label>
+        <label><%= l('part_comes_from') %></label>
         <%= select_tag("from_options", options_for_select(@from_options, params[:from_options]), {:onchange => 'show_from_input($("from_options").value);'}) %>
         <br/><span id='user_from_id_options'<%  if params[:from_options] != 'user_from_id' %> style='display:none'<% end %>><%= f.select(:user_from_id, @users, {}, {:disabled => (params[:from_options] == 'user_from_id' ? false:true)}) %></span>
         <span id='warehouse_from_id_options'<%  if params[:from_options] != 'warehouse_from_id' %> style='display:none'<% end %>><%= f.select(:warehouse_from_id, @warehouses, {}, {:disabled => (params[:from_options] == 'warehouse_from_id' ? false:true)}) %></span>
@@ -40,7 +40,7 @@
         <br/><%= f.select(:inventory_part_id, @parts, {}, {:onchange => "update_default_value($('inventory_in_movement_inventory_part_id').value);"}) %>
         <br/><%= f.text_field :serial_number, :size => 8 %>
         <br/><%= f.text_field :quantity, :size => 4, :required => true %>
-        <br/><%= f.select(:document_type, { "Factura" => 1, "Boleta" => 2, "F. Pro-forma" => 3, "Guia de Despacho" => 4, "Inventario" => 5}) %>
+        <br/><%= f.select(:document_type, @doc_types) %>
         <br/><%= f.text_field :document, :size => 30 %>
         <br/><%= f.text_field :value, :size => 10 %>
         <br/><%= f.select(:warehouse_to_id, @warehouses, {},{:id => 'in_movement_warehouse_to'}) %>

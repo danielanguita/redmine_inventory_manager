@@ -1,4 +1,4 @@
-<%= render_partial 'top_menu' %>
+<%= render :partial => 'top_menu' %>
 <h2><%= l(:inventory_movements) %></h2>
 <table style='width:100%'>
 <tr><td valign='top'>
@@ -8,12 +8,12 @@
     <% if params[:edit_in] %><%= l('Edit') %><% else %><%= l('Create') %><% end%> <%= l('input_movements') %>
     </h3>
     <div id='ip_create_in_form' <% if not params[:edit_in] and not params[:create_in] %>style='display:none;'<% end %>>
-      <%= render_partial 'movement_in_form' %>
+      <%= render :partial => 'movement_in_form' %>
     </div>
   </div>
 <% end %>
 
-<h3>Lista de Entradas</h3>
+<h3><%= l('in_movement_list') %></h3>
 <script>
   function show_part_info(part_number)
   {
@@ -28,7 +28,7 @@
   }
 </script>
 <table style='font-size:10px;border-collapse:collapse;'>
-  <tr><th>Id#</th><th>Part#</th><th>De</th><th>Bodega</th><th>Cant.</th><th>$</th><th>Doc.</th><th>Fecha</th></tr>
+  <tr><th>Id#</th><th><%= l('field_short_part_number') %></th><th><%= l('From') %></th><th><%= l('Warehouse') %></th><th><%= l('field_squantity') %></th><th>$</th><th><%= l('field_document') %></th><th><%= l('Date') %></th></tr>
   <% @movements_in.each do |p| %>
   <tr>
     <td><%= p.id %></td><td><a href='javascript:show_part_info("<%= p.inventory_part.part_number %>");'><%= p.inventory_part.part_number %></a></td>
@@ -59,14 +59,14 @@
     <% if params[:edit_out] %><%= l('Edit') %><% else %><%= l('Create') %><% end%> <%= l('output_movements') %>
     </h3>
     <div id='ip_create_out_form' <% if not params[:edit_out] and not params[:create_out] %>style='display:none;'<% end %>>
-      <%= render_partial 'movement_out_form' %>
+      <%= render :partial => 'movement_out_form' %>
     </div>
   </div>
 <% end %>
 
-<h3>Lista de Salidas</h3>
+<h3><%= l('out_movement_list') %></h3>
 <table style='font-size:10px;border-collapse:collapse;'>
-  <tr><th>Id#</th><th>Part#</th><th>Bodega</th><th>Para</th><th>Cant.</th><th>Doc.</th><th>Fecha</th></tr>
+  <tr><th>Id#</th><th><%= l('field_short_part_number') %></th><th><%= l('Warehouse') %></th><th><%= l('To') %></th><th><%= l('field_squantity') %></th><th><%= l('field_document') %></th><th><%= l('Date') %></th></tr>
   <% @movements_out.each do |p| %>
   <tr>
     <td><%= p.id %></td>

@@ -12,7 +12,7 @@
 <% end %>
 
 <table style='font-size:10px;border-collapse:collapse;'>
-  <tr><th>Id#</th><th>Part#</th><th>Marca</th><th>Descripcion</th><th>Categoria</th><th>Valor</th><th>Estado</th></tr>
+  <tr><th>Id#</th><th><%= l('field_part_number') %></th><th><%= l('field_manufacturer') %></th><th><%= l('field_description') %></th><th><%= l('field_category') %></th><th><%= l('field_value') %></th><th><%= l('field_status') %></th></tr>
   <% @parts.each do |p| %>
   <tr>
     <td><%= p.id %></td><td><%= p.part_number %></td><td><%= p.manufacturer %></td><td><%= p.description %></td>

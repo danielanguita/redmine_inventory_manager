@@ -22,9 +22,9 @@
         <br/><%= f.select(:inventory_part_id, @parts) %>
         <br/><%= f.text_field :serial_number, :size => 8 %>
         <br/><%= f.text_field :quantity, :size => 4, :required => true %>
+        <br/><%= f.select(:document_type, @doc_types) %>
         <br/><%= f.text_field :document, :size => 30 %>
-        <br/><%= f.text_field :document_type, :size => 4 %>
-        <br/><label>Parte se entrega a</label>
+        <br/><label><%= l('part_goes_to') %></label>
         <%= select_tag("to_options", options_for_select(@to_options, params[:to_options]), {:onchange => 'show_to_input($("to_options").value);'}) %>
         <br/><span id='user_to_id_options'<%  if params[:to_options] != 'user_to_id' %> style='display:none'<% end %>><%= f.select(:user_to_id, @users, {}, {:disabled => (params[:to_options] == 'user_to_id' ? false:true)}) %></span>
         <span id='project_id_options'<%  if params[:to_options] != 'project_id' %> style='display:none'<% end %>><%= f.select(:project_id, @inv_projects, {}, {:disabled => (params[:to_options] == 'project_id' ? false:true)}) %></span>

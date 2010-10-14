@@ -1,11 +1,11 @@
-﻿<%= render_partial 'top_menu' %>
+﻿<%= render :partial => 'top_menu' %>
 <h2><%= l('inventory_stock') %></h2>
 <form method='post'>
   <label><%= l('Warehouse') %></label>
   <%= select_tag(:warehouse, options_for_select(@warehouses,params[:warehouse]),{:onchange=>'submit();'}) %>
 </form>
 <table id='inventory_stock' cellspacing='0' cellpadding='4' border='1' style='border: 1px solid black;font-size:10px;border-collapse:collapse;'>
-  <tr><th>Part#</th><th>Descripcion</th><th>Valor</th><th>Entrada</th><th>Salida</th><th>Stock</th><th>Útimo Movimiento</th><th>Total</th></tr>
+  <tr><th><%= l('field_short_part_number') %></th><th><%= l('field_description') %></th><th><%= l('field_value') %></th><th><%= l('inputs') %></th><th><%= l('outputs') %></th><th><%= l('stock') %></th><th><%= l('last_movement') %></th><th><%= l('total') %></th></tr>
    <% 
    total = 0
    while s = @stock.fetch_row %>
@@ -23,7 +23,7 @@
     total += s[3].to_f*s[6].to_f 
    end %>
    <tr>
-    <th colspan="7" align="right">Inventario Valorizado:</th>
+    <th colspan="7" align="right"><%= l('inventory_value') %></th>
     <th align="right"><%= number_to_currency(total) %></th>
    </tr>
 </table>

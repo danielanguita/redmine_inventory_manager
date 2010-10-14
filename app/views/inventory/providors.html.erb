@@ -12,7 +12,7 @@
 <% end %>
 
 <table style='font-size:10px;border-collapse:collapse;'>
-  <tr><th>Id#</th><th>Id</th><th>Razon Social</th><th>Direccion</th><th>Telefono</th></tr>
+  <tr><th>Id#</th><th><%= l('field_identification') %></th><th><%= l('field_name') %></th><th><%= l('field_address0') %></th><th><%= l('field_phone0') %></th></tr>
   <% @providors.each do |p| %>
   <tr>
     <td><%= p.id %></td><td><%= p.identification %></td><td><%= p.name %></td>

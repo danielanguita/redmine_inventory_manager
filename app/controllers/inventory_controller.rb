@@ -130,6 +130,7 @@ class InventoryController < ApplicationController
     @warehouses = InventoryWarehouse.find(:all, :order => 'name').map {|w| [w.name, w.id]}
     @from_options = {l('User') => 'user_from_id', l('Warehouse') => 'warehouse_from_id', l('Providor') => 'inventory_providor_id'}
     @to_options = {l('User') => 'user_to_id', l('Project') => 'project_id'}
+    @doc_types = { l('invoice') => 1, l('ticket') => 2, l('proforma-invoice') => 3, l("waybill") => 4, l("inventory") => 5}
     current_user = find_current_user
     @has_permission = current_user.admin? || user_has_warehouse_permission(current_user.id, nil)
     
