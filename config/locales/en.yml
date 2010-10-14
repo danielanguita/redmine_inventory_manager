@@ -1,6 +1,6 @@
 # English strings go here for Rails i18n
 en:
-  inventory: "Inventario"
+  inventory: "Inventory"
   field_identification: "ID"
   field_name: "Name"
   field_address0: "Address"

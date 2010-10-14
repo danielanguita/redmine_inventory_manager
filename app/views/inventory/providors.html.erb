@@ -1,4 +1,4 @@
-<%= render_partial 'top_menu' %>
+<%= render :partial 'top_menu' %>
 <h2><%= l('inventory_providors') %></h2>
 <% if @has_permission %>
   <div class="box">
@@ -6,7 +6,7 @@
     <% if params[:edit] %><%= l('Edit') %><% else %><%= l('Create') %><% end%> <%= l('Providor') %>
     </h3>
     <div id='ip_create_form' <% if not params[:edit] and not params[:create] %>style='display:none;'<% end %>>
-      <%= render_partial 'providor_form' %>
+      <%= render :partial 'providor_form' %>
     </div>
   </div>
 <% end %>
