@@ -287,6 +287,8 @@ class InventoryController < ApplicationController
 
   def parts
     @categories = InventoryCategory.find(:all, :order => 'name').map {|c| [c.name,c.id]}
+    @statuses = { l('active') => 1, l("obsolet") => 2, l('discontinued') => 3}
+    @statuses_array = ['',l('active'),l("obsolet"),l('discontinued')]
     current_user = find_current_user
     @has_permission = current_user.admin? || user_has_warehouse_permission(current_user.id, nil)
     if params[:delete] or params[:edit] or params[:inventory_part]

@@ -17,7 +17,7 @@
   <tr>
     <td><%= p.id %></td><td><%= p.part_number %></td><td><%= p.manufacturer %></td><td><%= p.description %></td>
     <td><%= p.inventory_category.name %></td><td><%= number_to_currency(p.value) %></td>
-    <td><%= (p.status == 1 ? "Vigente" : "Obsoleto") %></td>
+    <td><%= @statuses_array[p.status] %></td>
   <% if @has_permission %> 
     <td><%= link_to image_tag('edit.png'), 'parts?edit='+p.id.to_s %></td>
     <td><%= link_to image_tag('delete.png'), 'parts?delete='+p.id.to_s, :confirm => l('delete_confirmation') %></td>

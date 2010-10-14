@@ -2,6 +2,7 @@
 
 *Description*
   Take your warehouse or office inventory on the same platform of your projects.
+  http://github.com/danielanguita/Redmine-Inventory-Manager
 
 *Instalation*
   1.- Install Redmine (http://www.redmine.org/wiki/1/RedmineInstall)

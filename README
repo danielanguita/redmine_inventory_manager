@@ -1,5 +1,19 @@
 -== Redmine Inventory Manager ==-
 
-Take your warehouse or office inventory on the same platform of your projects.
+*Description*
+  Take your warehouse or office inventory on the same platform of your projects.
+  http://github.com/danielanguita/Redmine-Inventory-Manager
 
-http://github.com/danielanguita/Redmine-Inventory-Manager
+*Instalation*
+  1.- Install Redmine (http://www.redmine.org/wiki/1/RedmineInstall)
+  2.- Get the plugin and install
+    $> ruby script/plugin install git://github.com/danielanguita/Redmine-Inventory-Manager.git
+    $> mv vendor/plugins/Redmine-Inventory-Manager vendor/plugins/redmine_inventory_manager
+    $> rake db:migrate_plugins RAILS_ENV=production
+  3.- Start your server and enjoy! :D
+	
+*Notes*
+  - Tested only with MySQL
+  - Tested on Redmine 0.8.4 and 1.0.2
+  - Tested only with Mongrel
+  - Only two languages supportes for now (spanish and english)

@@ -74,3 +74,6 @@ en:
   proforma-invoice: "Proforma Invoice"
   waybill: "Waybill"
   ticket: "Ticket"
+  active: "Active"
+  obsolet: "Obsolet"
+  discontinued: "Discontinued"

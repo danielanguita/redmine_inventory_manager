@@ -74,3 +74,6 @@ es:
   proforma-invoice: "Factura Proforma"
   waybill: "Guía de Despacho"
   ticket: "Boleta"
+  active: "Vigente"
+  obsolet: "Obsoleto"
+  discontinued: "Descontinuado"
