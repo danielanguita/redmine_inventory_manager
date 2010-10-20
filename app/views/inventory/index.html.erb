@@ -3,27 +3,32 @@
 <form method='post'>
   <label><%= l('Warehouse') %></label>
   <%= select_tag(:warehouse, options_for_select(@warehouses,params[:warehouse]),{:onchange=>'submit();'}) %>
+  <input type='button' value='<%= l('export').capitalize %> CSV' onclick="location.href='/inventory/inventory_stock_xls?warehouse='+$('warehouse').value" />
 </form>
 <table id='inventory_stock' cellspacing='0' cellpadding='4' border='1' style='border: 1px solid black;font-size:10px;border-collapse:collapse;'>
-  <tr><th><%= l('field_short_part_number') %></th><th><%= l('field_description') %></th><th><%= l('field_value') %></th><th><%= l('inputs') %></th><th><%= l('outputs') %></th><th><%= l('stock') %></th><th><%= l('last_movement') %></th><th><%= l('total') %></th></tr>
+  <tr>
+    <th><%= l('field_short_part_number') %></th><th><%= l('field_category') %></th><th><%= l('field_description') %></th>
+    <th><%= l('field_value') %></th><th><%= l('inputs') %></th><th><%= l('outputs') %></th><th><%= l('stock') %></th>
+    <th><%= l('last_movement') %></th><th><%= l('total') %></th></tr>
    <% 
    total = 0
    while s = @stock.fetch_row %>
   <tr>
    <td><%= s[0] %><% if s[1] and s[1].length > 0 %> (<%= s[1] %>)<% end %></td>
    <td><%= s[2] %></td>
-   <td align='right'><%= number_to_currency(s[3]) %></td>
-   <td align='right'><%= s[4] %></td>
+   <td><%= s[3] %></td>
+   <td align='right'><%= number_to_currency(s[4]) %></td>
    <td align='right'><%= s[5] %></td>
-   <td align='right'><b><%= s[6] %></b></td>
-   <td><%= s[7] %></td>
-   <td align='right'><%= number_to_currency(s[3].to_f*s[6].to_f) %></td>
+   <td align='right'><%= s[6] %></td>
+   <td align='right'><b><%= s[7] %></b></td>
+   <td><%= s[8] %></td>
+   <td align='right'><%= number_to_currency(s[4].to_f*s[7].to_f) %></td>
   </tr>
    <% 
-    total += s[3].to_f*s[6].to_f 
+    total += s[4].to_f*s[7].to_f 
    end %>
    <tr>
-    <th colspan="7" align="right"><%= l('inventory_value') %></th>
+    <th colspan="8" align="right"><%= l('inventory_value') %></th>
     <th align="right"><%= number_to_currency(total) %></th>
    </tr>
 </table>

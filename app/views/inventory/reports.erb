@@ -1,0 +1,9 @@
+﻿<%= render :partial => 'top_menu' %>
+<h2><%= l('reports').capitalize %></h2>
+<div>
+  <label><%= l('Warehouse') %></label>
+  <%= select_tag(:warehouse, options_for_select(@warehouses,params[:warehouse]),{:onchange=>'submit();'}) %>
+</div>
+<p style='margin-left:40px; padding:10px; border-left: 1px solid #EEEEEE;'>
+  <input type='button' value='<%= l('inventory_inputs_document_report') %>' onclick="location.href='/inventory/report_export/input_invoice?warehouse='+$('warehouse').value" />
+</p>

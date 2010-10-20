@@ -1,8 +1,60 @@
+require 'csv'
 class InventoryController < ApplicationController
   unloadable
 
+  def reports
+    @warehouses = InventoryWarehouse.find(:all, :order => 'name').map {|w| [w.name, w.id]}
+    @warehouses += [l('all_warehouses')]
+    
+    unless params[:warehouse]
+      params[:warehouse] = l('all_warehouses')
+    end
+  end
+  
+  def report_export
+    unless params[:id]
+      params[:id] = nil
+    end
+    
+    add = ""
+    unless params[:warehouse]
+      params[:warehouse] = l('all_warehouses')
+    end
+    
+    if params[:warehouse] != l('all_warehouses')
+      add = " AND warehouse_to_id = #{params[:warehouse]}"
+    else
+      add = " AND warehouse_to_id is not null"
+    end
+    
+    if params[:id] == "input_invoice"
+      @movements = InventoryMovement.find(:all, :conditions => "document is not null and document != '' and document_type <= 3"+add, :order => 'document')
+      
+      headers = [l(:From),l(:field_document),l(:field_category),l(:field_short_part_number),
+        l(:field_serial_number), l(:field_squantity), l(:field_value),l(:total),l(:Date)]
+      fields = []
+      @movements.each do |m|
+        from = nil
+        if m.user_from_id
+          from = User.find(m.user_from_id).login
+        elsif m.inventory_providor
+          from = m.inventory_providor.name
+        elsif m.warehouse_from_id
+          from = InventoryWarehouse.find(m.warehouse_from_id).name
+        end
+        total = (m.quantity * m.value rescue 0)
+        fields << [from, m.document, m.inventory_part.inventory_category.name, m.inventory_part.part_number, m.serial_number, m.quantity, m.value, total, m.date]
+      end
+      
+      arrays = []
+      arrays[0] = headers
+      arrays[1] = fields
+        
+      send_data(to_csv(arrays).read, :type => 'text/csv; header=present', :filename => 'in_movements_doc.csv')
+    end
+  end  
+
   def index
-    sql = ActiveRecord::Base.connection()
     @warehouses = InventoryWarehouse.find(:all, :order => 'name').map {|w| [w.name, w.id]}
     @warehouses += [l('all_warehouses')]
     
@@ -16,36 +68,99 @@ class InventoryController < ApplicationController
             "`inventory_movements`.`warehouse_to_id` = #{params[:warehouse]})"
       params[:warehouse] = params[:warehouse].to_i
     end
+    @stock = get_stock(add)
     
+  end
+  
+  def get_stock(warehouse_query)
+    sql = ActiveRecord::Base.connection()
     @stock = sql.execute("SELECT in_movements.part_number as part_number,
-          in_movements.serial_number as serial_number, in_movements.part_description as description,
-          in_movements.value,
-          IFNULL(in_movements.quantity,0) as input,
-          IFNULL(out_movements.quantity,0) as output,
-          (IFNULL(in_movements.quantity,0)-IFNULL(out_movements.quantity,0)) as stock,
-          GREATEST(IFNULL(in_movements.last_date,0), IFNULL(out_movements.last_date,0)) as last_movement
-            FROM
-        (SELECT `inventory_parts`.`part_number` AS `part_number`, `inventory_movements`.`serial_number` AS `serial_number`,
-            `inventory_parts`.`value` AS `value`,sum(`inventory_movements`.`quantity`) AS `quantity`,
-            max(`inventory_movements`.`date`) AS `last_date`
-              FROM (`inventory_parts`
-                LEFT JOIN `inventory_movements` on((`inventory_movements`.`inventory_part_id` = `inventory_parts`.`id`)))
-                  WHERE (isnull(`inventory_movements`.`inventory_providor_id`) AND isnull(`inventory_movements`.`user_from_id`)"+add+"
-                    AND ((`inventory_movements`.`project_id` is not null) or (`inventory_movements`.`user_to_id` is not null)))
-                      GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`
-                      ORDER BY `inventory_parts`.`part_number`) as out_movements
-              RIGHT JOIN
-        (SELECT `inventory_parts`.`part_number` AS `part_number`,`inventory_parts`.`description` AS `part_description`,`inventory_movements`.`serial_number` AS `serial_number`,
-            `inventory_parts`.`value` AS `value`,sum(`inventory_movements`.`quantity`) AS `quantity`,
-            max(`inventory_movements`.`date`) AS `last_date`
-              FROM (`inventory_parts`
-                LEFT JOIN `inventory_movements` on((`inventory_movements`.`inventory_part_id` = `inventory_parts`.`id`)))
-                  WHERE (isnull(`inventory_movements`.`project_id`) and isnull(`inventory_movements`.`user_to_id`))"+add+"
-                    GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`
-                    ORDER BY `inventory_parts`.`part_number`) as in_movements
-              ON
-                (out_movements.part_number = in_movements.part_number
-                AND out_movements.serial_number = in_movements.serial_number);")
+    in_movements.serial_number as serial_number, in_movements.category as category,
+    in_movements.part_description as description, in_movements.value,
+    IFNULL(in_movements.quantity,0) as input,
+    IFNULL(out_movements.quantity,0) as output,
+    (IFNULL(in_movements.quantity,0)-IFNULL(out_movements.quantity,0)) as stock,
+    GREATEST(IFNULL(in_movements.last_date,0), IFNULL(out_movements.last_date,0)) as last_movement
+      FROM
+  (SELECT `inventory_parts`.`part_number` AS `part_number`, `inventory_movements`.`serial_number` AS `serial_number`,
+      `inventory_parts`.`value` AS `value`,sum(`inventory_movements`.`quantity`) AS `quantity`,
+      max(`inventory_movements`.`date`) AS `last_date`
+        FROM (`inventory_parts`
+          LEFT JOIN `inventory_movements` on((`inventory_movements`.`inventory_part_id` = `inventory_parts`.`id`)))
+            WHERE (isnull(`inventory_movements`.`inventory_providor_id`) AND isnull(`inventory_movements`.`user_from_id`)"+warehouse_query+"
+              AND ((`inventory_movements`.`project_id` is not null) or (`inventory_movements`.`user_to_id` is not null)))
+                GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`
+                ORDER BY `inventory_parts`.`part_number`) as out_movements
+        RIGHT JOIN
+  (SELECT `inventory_parts`.`part_number` AS `part_number`, `inventory_categories`.`name` AS `category`,`inventory_parts`.`description` AS `part_description`,`inventory_movements`.`serial_number` AS `serial_number`,
+      `inventory_parts`.`value` AS `value`,sum(`inventory_movements`.`quantity`) AS `quantity`,
+      max(`inventory_movements`.`date`) AS `last_date`
+        FROM (`inventory_parts`
+          LEFT JOIN `inventory_movements` on((`inventory_movements`.`inventory_part_id` = `inventory_parts`.`id`))
+          LEFT JOIN `inventory_categories` on((`inventory_categories`.`id` = `inventory_parts`.`inventory_category_id`)))
+            WHERE (isnull(`inventory_movements`.`project_id`) and isnull(`inventory_movements`.`user_to_id`))"+warehouse_query+"
+              GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`
+              ORDER BY `inventory_parts`.`part_number`) as in_movements
+        ON
+          (out_movements.part_number = in_movements.part_number
+          AND out_movements.serial_number = in_movements.serial_number)
+        ORDER BY category, part_number;")
+    return @stock
+  end
+  
+  def to_csv(arrays)
+    ic = Iconv.new(l(:general_csv_encoding), 'UTF-8')    
+    decimal_separator = l(:general_csv_decimal_separator)
+    export = StringIO.new
+    CSV::Writer.generate(export, l(:general_csv_separator)) do |csv|
+      # csv header fields
+      headers = arrays[0]
+      csv << headers.collect {|c| begin; ic.iconv(c.to_s); rescue; c.to_s; end }
+      arrays[1].each do |fields|
+        0.upto(fields.length-1) do |i|
+          if fields[i].is_a?(Numeric)
+            fields[i] = fields[i].to_s.gsub('.', decimal_separator)
+          end
+        end
+        csv << fields.collect {|c| begin; ic.iconv(c.to_s); rescue; c.to_s; end }
+      end
+    end
+    export.rewind
+    return export
+  end
+  
+  def inventory_stock_xls
+    add = ""
+    unless params[:warehouse]
+      params[:warehouse] = l('all_warehouses')
+    end
+    
+    if params[:warehouse] != l('all_warehouses')
+      add = " AND (`inventory_movements`.`warehouse_from_id` = #{params[:warehouse]} OR " +
+            "`inventory_movements`.`warehouse_to_id` = #{params[:warehouse]})"
+      params[:warehouse] = params[:warehouse].to_i
+    end
+    @stock = get_stock(add)
+    
+    headers = [l(:field_short_part_number), l(:field_category), l(:field_description), l(:field_value),
+                l(:inputs), l(:outputs),  l(:stock), l(:last_movement), l(:total)]
+    fields = []
+    total = 0
+    @stock.each do |s|
+      new_fields = [s[0],s[2],s[3],s[4],s[5],s[6],s[7],s[8],(s[4].to_f*s[7].to_f)]
+      if s[1] and s[1].length > 0
+        new_fields[0] << "(#{s[1]})"
+      end
+      total += s[4].to_f*s[7].to_f 
+      fields << new_fields
+    end
+    fields << [nil,nil,nil,nil,nil,nil,nil,l(:total),total]
+    
+    arrays = []
+    arrays[0] = headers
+    arrays[1] = fields
+    
+    send_data(to_csv(arrays).read, :type => 'text/csv; header=present', :filename => 'inventory_stock.csv')
   end
 
   def ajax_get_part_value

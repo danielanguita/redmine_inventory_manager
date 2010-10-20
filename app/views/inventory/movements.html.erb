@@ -28,7 +28,8 @@
   }
 </script>
 <table style='font-size:10px;border-collapse:collapse;'>
-  <tr><th>Id#</th><th><%= l('field_short_part_number') %></th><th><%= l('From') %></th><th><%= l('Warehouse') %></th><th><%= l('field_squantity') %></th><th>$</th><th><%= l('field_document') %></th><th><%= l('Date') %></th></tr>
+  <tr><th>Id#</th><th><%= l('field_short_part_number') %></th><th><%= l('From') %></th><th><%= l('Warehouse') %></th>
+  <th><%= l('field_squantity') %></th><th>$</th><th><%= l('field_document') %></th><th><%= l('Date') %></th></tr>
   <% @movements_in.each do |p| %>
   <tr>
     <td><%= p.id %></td><td><a href='javascript:show_part_info("<%= p.inventory_part.part_number %>");'><%= p.inventory_part.part_number %></a></td>
