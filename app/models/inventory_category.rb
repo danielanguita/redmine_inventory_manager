@@ -5,4 +5,5 @@ class InventoryCategory < ActiveRecord::Base
   has_many :inventory_parts
   
   validates_presence_of :name
+
 end

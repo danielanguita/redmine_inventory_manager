@@ -1,6 +1,7 @@
 require 'csv'
 class InventoryController < ApplicationController
-  unloadable
+
+	unloadable
 
   def reports
     @warehouses = InventoryWarehouse.find(:all, :order => 'name').map {|w| [w.name, w.id]}
@@ -28,7 +29,9 @@ class InventoryController < ApplicationController
     end
     
     if params[:id] == "input_invoice"
-      @movements = InventoryMovement.find(:all, :conditions => "document is not null and document != '' and document_type <= 3"+add, :order => 'document')
+      @movements = InventoryMovement.find(:all, 
+      	:conditions => "document is not null and document != '' and document_type <= 3"+add, 
+      	:order => 'document')
       
       headers = [l(:From),l(:field_document),l(:field_category),l(:field_short_part_number),
         l(:field_serial_number), l(:field_squantity), l(:field_value),l(:total),l(:Date)]

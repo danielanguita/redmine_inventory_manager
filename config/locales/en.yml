@@ -8,7 +8,7 @@ en:
   field_city: "City"
   field_state: "State"
   field_country: "Country"
-  field_phone0: "Phone"
+  field_phone0: "Phone"/Users/Daniel/Desarrollo/www/redmine-2.6.0/plugins/redmine_inventory_manager/config/locales/en.yml
   field_phone1: "Phone 2"
   field_fax: "Fax"
   field_business: "Business"
