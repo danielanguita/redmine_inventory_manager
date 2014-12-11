@@ -56,6 +56,7 @@ class InventoryController < ApplicationController
       send_data(to_csv(arrays).read, :type => 'text/csv; header=present', :filename => 'in_movements_doc.csv')
     end
   end  
+  
 
   def index
     @warehouses = InventoryWarehouse.find(:all, :order => 'name').map {|w| [w.name, w.id]}
@@ -72,7 +73,6 @@ class InventoryController < ApplicationController
       params[:warehouse] = params[:warehouse].to_i
     end
     @stock = get_stock(add)
-    
   end
   
   def get_stock(warehouse_query)
@@ -166,6 +166,7 @@ class InventoryController < ApplicationController
     send_data(to_csv(arrays).read, :type => 'text/csv; header=present', :filename => 'inventory_stock.csv')
   end
 
+  
   def ajax_get_part_value
     out = ''
     if params[:part_id]
@@ -239,6 +240,7 @@ class InventoryController < ApplicationController
     end
     return false
   end
+  
 
   def movements
     @parts = InventoryPart.find(:all, :order => 'part_number').map {|p| [p.part_number,p.id]}
@@ -366,6 +368,8 @@ class InventoryController < ApplicationController
     @movements_out = InventoryMovement.find(:all, :conditions => "inventory_providor_id is null and user_from_id is null and (project_id is not null or user_to_id is not null)", :order => "date DESC")
   end
 
+  
+  
   def categories
     current_user = find_current_user
     @has_permission = current_user.admin? || user_has_warehouse_permission(current_user.id, nil)
@@ -403,6 +407,8 @@ class InventoryController < ApplicationController
     @categories = InventoryCategory.find(:all)
   end
 
+
+    
   def parts
     @categories = InventoryCategory.find(:all, :order => 'name').map {|c| [c.name,c.id]}
     @statuses = { l('active') => 1, l("obsolet") => 2, l('discontinued') => 3}
@@ -511,4 +517,6 @@ class InventoryController < ApplicationController
     
     @warehouses = InventoryWarehouse.find(:all)
   end
+
+
 end

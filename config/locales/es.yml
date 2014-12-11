@@ -1,82 +1,84 @@
-﻿# Spanish strings go here
-es:
-  inventory: "Inventario"
-  field_identification: "RUT"
-  field_name: "Nombre"
-  field_address0: "Dirección"
-  field_address1: "Dirección 2"
-  field_city: "Ciudad"
-  field_state: "Comuna"
-  field_country: "País"
-  field_phone0: "Teléfono"
-  field_phone1: "Teléfono 2"
-  field_fax: "Fax"
-  field_business: "Giro"
-  field_email: "E-Mail"
-  field_contact0: "Contacto"
-  field_contact1: "Contacto 2"
-  field_inventory_category: "Categoría"
-  field_manufacturer: "Marca"
-  field_part_number: "Parte#/Modelo"
-  field_inventory_part: "Parte#/Modelo"
-  field_inventory_providor: "Proveedor"
-  field_quantity: "Cantidad"
-  field_squantity: "Cant."
-  field_document: "Documento"
-  field_document_type: "Tipo Documento"
-  field_location: "Locación"
-  field_user_from: "Usuario"
-  field_warehouse_from: "Bodega"
-  field_user_to: "Usuario"
-  field_warehouse_to: "Entra a Bodega"
-  field_serial_number: "Numero de Serie"
-  inventory_stock: "Stock de Inventario"
-  inventory_movements: "Movimientos"
-  inventory_parts: "Partes#/Modelos"
-  inventory_categories: "Categorias"
-  inventory_warehouses: "Bodegas"
-  inventory_providors: "Proveedores"
-  inventory_manager: "Inventario"
-  Edit: "Editar"
-  Create: "Crear"
-  Delete: "Eliminar"
-  Cancel: "Cancelar"
-  input_movements: "Movimiento de Entrada"
-  output_movements: "Movimiento de Salida"
-  User: "Usuario"
-  Project: "Projecto"
-  Providor: "Proveedor"
-  Warehouse: "Bodega"
-  Part: "Parte#/Modelo"
-  Category: "Categoría"
-  all_warehouses: "Todas las Bodegas"
-  delete_confirmation: "Esta seguro que desea ELIMINAR el registro?"
-  cant_delete_register: "No es posible eliminar el registro. Probablemente debe estar relacionado con otro."
-  out_of_stock: "No existe stock suficiente para realizar el movimiento de salida."
-  field_where: "¿Donde se guarda?"
-  field_user_manager: "Administrador de Bodega"
-  permission_denied: "No tienes permiso para realizar cambios en esa Bodega"
-  field_short_part_number: "Part#"
-  From: "De"
-  To: "To"
-  Date: "Fecha"
-  out_movement_list: "Lista de Salidas"
-  in_movement_list: "Lista de Entradas"
-  part_comes_from: "Parte proviene de"
-  part_goes_to: "Parte se entrega a"
-  inputs: "Entradas"
-  outputs: "Salidas"
-  stock: "Stock"
-  last_movement: "Último Movimiento"
-  total: "Total"
-  inventory_value: "Inventario Valorizado"
-  invoice: "Factura"
-  proforma-invoice: "Factura Proforma"
-  waybill: "Guía de Despacho"
-  ticket: "Boleta"
-  active: "Vigente"
-  obsolet: "Obsoleto"
-  discontinued: "Descontinuado"
-  export: "exportar"
-  reports: "reportes"
-  inventory_inputs_document_report: "Entradas c/Documentos"
+﻿"es":
+
+  label_home: Inventory Manager
+  inventory: Inventario
+  field_identification: RUT
+  field_name: Nombre
+  field_address0: Dirección
+  field_address1: Dirección 2
+  field_city: Ciudad
+  field_state: Comuna
+  field_country: País
+  field_phone0: Teléfono
+  field_phone1: Teléfono 2
+  field_fax: Fax
+  field_business: Giro
+  field_email: E-Mail
+  field_contact0: Contacto
+  field_contact1: Contacto 2
+  field_inventory_category: Categoría
+  field_manufacturer: Marca
+  field_part_number: Parte#/Modelo
+  field_inventory_part: Parte#/Modelo
+  field_inventory_providor: Proveedor
+  field_quantity: Cantidad
+  field_squantity: Cant.
+  field_document: Documento
+  field_document_type: Tipo Documento
+  field_location: Locación
+  field_user_from: Usuario
+  field_warehouse_from: Bodega
+  field_user_to: Usuario
+  field_warehouse_to: Entra a Bodega
+  field_serial_number: Numero de Serie
+  inventory_stock: Stock de Inventario
+  inventory_movements: Movimientos
+  inventory_parts: Partes#/Modelos
+  inventory_categories: Categorias
+  inventory_warehouses: Bodegas
+  inventory_providors: Proveedores
+  inventory_manager: Inventario
+  Edit: Editar
+  Create: Crear
+  Delete: Eliminar
+  Cancel: Cancelar
+  input_movements: Movimiento de Entrada
+  output_movements: Movimiento de Salida
+  User: Usuario
+  Project: Projecto
+  Providor: Proveedor
+  Warehouse: Bodega
+  Part: Parte#/Modelo
+  Category: Categoría
+  all_warehouses: Todas las Bodegas
+  delete_confirmation: Esta seguro que desea ELIMINAR el registro?
+  cant_delete_register: No es posible eliminar el registro. Probablemente debe estar relacionado con otro.
+  out_of_stock: No existe stock suficiente para realizar el movimiento de salida.
+  field_where: ¿Donde se guarda?
+  field_user_manager: Administrador de Bodega
+  permission_denied: No tienes permiso para realizar cambios en esa Bodega
+  field_short_part_number: Part#
+  From: De
+  To: To
+  Date: Fecha
+  out_movement_list: Lista de Salidas
+  in_movement_list: Lista de Entradas
+  part_comes_from: Parte proviene de
+  part_goes_to: Parte se entrega a
+  inputs: Entradas
+  outputs: Salidas
+  stock: Stock
+  last_movement: Último Movimiento
+  total: Total
+  inventory_value: Inventario Valorizado
+  invoice: Factura
+  proforma-invoice: Factura Proforma
+  waybill: Guía de Despacho
+  ticket: Boleta
+  active: Vigente
+  obsolet: Obsoleto
+  discontinued: Descontinuado
+  export: exportar
+  reports: reportes
+  inventory_inputs_document_report: Entradas c/Documentos
+  
