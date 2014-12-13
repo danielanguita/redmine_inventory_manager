@@ -17,14 +17,10 @@
 <script>
   function show_part_info(part_number)
   {
-    new Ajax.Request("/inventory/ajax_get_part_info",{
-                          method:"post",
-                          parameters:"part_number="+part_number,
-                          onSuccess:function(t){
-                            var value = t.responseJSON;
-                            alert(value.inventory_part.description);
-                          }
-                      });
+		$.post("/inventory/ajax_get_part_info",{part_number:part_number})
+    	.done(function(data){
+      	alert(data.inventory_part.description);
+      });
   }
 </script>
 <table style='font-size:10px;border-collapse:collapse;'>
