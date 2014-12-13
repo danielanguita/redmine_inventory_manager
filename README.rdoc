@@ -17,3 +17,4 @@
 *Notes*
   - Tested on Redmine 2.4, MySQL 5.5, Rails 3.2 and Ruby 2.0
   - Only two languages supportes for now (spanish and english)
+  - Please Donate to keep this plugin up to date. You'll see the link on the plugin when installed.
