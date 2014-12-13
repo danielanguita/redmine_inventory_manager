@@ -1,7 +1,6 @@
-﻿"es":
-
-  label_home: Inventory Manager
+"es":
   inventory: Inventario
+  reports: Informes
   field_identification: RUT
   field_name: Nombre
   field_address0: Dirección
@@ -18,8 +17,8 @@
   field_contact1: Contacto 2
   field_inventory_category: Categoría
   field_manufacturer: Marca
-  field_part_number: Parte#/Modelo
-  field_inventory_part: Parte#/Modelo
+  field_part_number: Producto
+  field_inventory_part: Producto
   field_inventory_providor: Proveedor
   field_quantity: Cantidad
   field_squantity: Cant.
@@ -33,8 +32,8 @@
   field_serial_number: Numero de Serie
   inventory_stock: Stock de Inventario
   inventory_movements: Movimientos
-  inventory_parts: Partes#/Modelos
-  inventory_categories: Categorias
+  inventory_parts: Productos
+  inventory_categories: Categorías
   inventory_warehouses: Bodegas
   inventory_providors: Proveedores
   inventory_manager: Inventario
@@ -48,7 +47,7 @@
   Project: Projecto
   Providor: Proveedor
   Warehouse: Bodega
-  Part: Parte#/Modelo
+  Part: Producto
   Category: Categoría
   all_warehouses: Todas las Bodegas
   delete_confirmation: Esta seguro que desea ELIMINAR el registro?
@@ -57,14 +56,14 @@
   field_where: ¿Donde se guarda?
   field_user_manager: Administrador de Bodega
   permission_denied: No tienes permiso para realizar cambios en esa Bodega
-  field_short_part_number: Part#
+  field_short_part_number: Producto
   From: De
   To: To
   Date: Fecha
   out_movement_list: Lista de Salidas
   in_movement_list: Lista de Entradas
-  part_comes_from: Parte proviene de
-  part_goes_to: Parte se entrega a
+  part_comes_from: Producto proviene de
+  part_goes_to: Producto se entrega a
   inputs: Entradas
   outputs: Salidas
   stock: Stock
@@ -78,7 +77,6 @@
   active: Vigente
   obsolet: Obsoleto
   discontinued: Descontinuado
-  export: exportar
-  reports: reportes
-  inventory_inputs_document_report: Entradas c/Documentos
-  
+  export: Exportar
+  reports: Informes
+  inventory_inputs_document_report: Entradas c/Documentos de Compra

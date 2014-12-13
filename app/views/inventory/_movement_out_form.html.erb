@@ -1,19 +1,19 @@
 <script>
   function show_to_input(input)
   {
-    var span = $(input + "_options");
-    var input = $("inventory_out_movement_" + input);
+    var span = $("#" + input + "_options");
+    var input = $("#inventory_out_movement_" + input);
     
-    $('user_to_id_options').hide();
-    $('project_id_options').hide();
-    $('inventory_out_movement_user_to_id').disable();
-    $('inventory_out_movement_project_id').disable();
+    $('#user_to_id_options').hide();
+    $('#project_id_options').hide();
+    $('#inventory_out_movement_user_to_id').attr('disabled','disabled');
+    $('#inventory_out_movement_project_id').attr('disabled','disabled');
     
-    input.enable();
+    input.removeAttr('disabled');
     span.show();
   }
 </script>
-<% labelled_tabular_form_for :inventory_out_movement, @inventory_out_movement,
+<%= labelled_form_for :inventory_out_movement, @inventory_out_movement,
                              :url => {:action => 'movements', :id => @inventory_out_movement},
                              :html => {:id => 'part-out-form'} do |f| %>
     <%= error_messages_for 'inventory_out_movement' %>
@@ -25,7 +25,7 @@
         <br/><%= f.select(:document_type, @doc_types) %>
         <br/><%= f.text_field :document, :size => 30 %>
         <br/><label><%= l('part_goes_to') %></label>
-        <%= select_tag("to_options", options_for_select(@to_options, params[:to_options]), {:onchange => 'show_to_input($("to_options").value);'}) %>
+        <%= select_tag("to_options", options_for_select(@to_options, params[:to_options]), {:onchange => 'show_to_input($("#to_options").val());'}) %>
         <br/><span id='user_to_id_options'<%  if params[:to_options] != 'user_to_id' %> style='display:none'<% end %>><%= f.select(:user_to_id, @users, {}, {:disabled => (params[:to_options] == 'user_to_id' ? false:true)}) %></span>
         <span id='project_id_options'<%  if params[:to_options] != 'project_id' %> style='display:none'<% end %>><%= f.select(:project_id, @inv_projects, {}, {:disabled => (params[:to_options] == 'project_id' ? false:true)}) %></span>
         <% if params[:edit_out] %><input type='hidden' name='edit_out' value='<%= params[:edit_out] %>'/>

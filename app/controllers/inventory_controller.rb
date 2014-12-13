@@ -33,7 +33,7 @@ class InventoryController < ApplicationController
       	:conditions => "document is not null and document != '' and document_type <= 3"+add, 
       	:order => 'document')
       
-      headers = [l(:From),l(:field_document),l(:field_category),l(:field_short_part_number),
+      headers = [l(:From),l(:field_document),l(:field_document_type),l(:field_category),l(:field_short_part_number),
         l(:field_serial_number), l(:field_squantity), l(:field_value),l(:total),l(:Date)]
       fields = []
       @movements.each do |m|
@@ -46,14 +46,14 @@ class InventoryController < ApplicationController
           from = InventoryWarehouse.find(m.warehouse_from_id).name
         end
         total = (m.quantity * m.value rescue 0)
-        fields << [from, m.document, m.inventory_part.inventory_category.name, m.inventory_part.part_number, m.serial_number, m.quantity, m.value, total, m.date]
+        fields << [from, m.document, m.doctype, m.inventory_part.inventory_category.name, m.inventory_part.part_number, m.serial_number, m.quantity, m.value, total, m.date]
       end
       
       arrays = []
       arrays[0] = headers
       arrays[1] = fields
         
-      send_data(to_csv(arrays).read, :type => 'text/csv; header=present', :filename => 'in_movements_doc.csv')
+      send_data(to_csv(arrays), :type => 'text/csv; header=present', :filename => 'in_movements_doc.csv')
     end
   end  
   
@@ -77,33 +77,34 @@ class InventoryController < ApplicationController
   
   def get_stock(warehouse_query)
     sql = ActiveRecord::Base.connection()
-    @stock = sql.execute("SELECT in_movements.part_number as part_number,
-    in_movements.serial_number as serial_number, in_movements.category as category,
-    in_movements.part_description as description, in_movements.value,
-    IFNULL(in_movements.quantity,0) as input,
-    IFNULL(out_movements.quantity,0) as output,
-    (IFNULL(in_movements.quantity,0)-IFNULL(out_movements.quantity,0)) as stock,
-    GREATEST(IFNULL(in_movements.last_date,0), IFNULL(out_movements.last_date,0)) as last_movement
-      FROM
-  (SELECT `inventory_parts`.`part_number` AS `part_number`, `inventory_movements`.`serial_number` AS `serial_number`,
-      `inventory_parts`.`value` AS `value`,sum(`inventory_movements`.`quantity`) AS `quantity`,
-      max(`inventory_movements`.`date`) AS `last_date`
-        FROM (`inventory_parts`
+    @stock = sql.execute(
+    "SELECT in_movements.part_number as part_number,
+    	in_movements.serial_number as serial_number, in_movements.category as category,
+    	in_movements.part_description as description, in_movements.value,
+    	IFNULL(in_movements.quantity,0) as input,
+    	IFNULL(out_movements.quantity,0) as output,
+    	(IFNULL(in_movements.quantity,0)-IFNULL(out_movements.quantity,0)) as stock,
+    	GREATEST(IFNULL(in_movements.last_date,0), IFNULL(out_movements.last_date,0)) as last_movement
+    FROM
+  		(SELECT `inventory_parts`.`part_number` AS `part_number`, `inventory_movements`.`serial_number` AS `serial_number`,
+      		`inventory_parts`.`value` AS `value`,sum(`inventory_movements`.`quantity`) AS `quantity`,
+      		max(`inventory_movements`.`date`) AS `last_date`
+      	FROM (`inventory_parts`
           LEFT JOIN `inventory_movements` on((`inventory_movements`.`inventory_part_id` = `inventory_parts`.`id`)))
             WHERE (isnull(`inventory_movements`.`inventory_providor_id`) AND isnull(`inventory_movements`.`user_from_id`)"+warehouse_query+"
               AND ((`inventory_movements`.`project_id` is not null) or (`inventory_movements`.`user_to_id` is not null)))
                 GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`
                 ORDER BY `inventory_parts`.`part_number`) as out_movements
         RIGHT JOIN
-  (SELECT `inventory_parts`.`part_number` AS `part_number`, `inventory_categories`.`name` AS `category`,`inventory_parts`.`description` AS `part_description`,`inventory_movements`.`serial_number` AS `serial_number`,
-      `inventory_parts`.`value` AS `value`,sum(`inventory_movements`.`quantity`) AS `quantity`,
-      max(`inventory_movements`.`date`) AS `last_date`
-        FROM (`inventory_parts`
-          LEFT JOIN `inventory_movements` on((`inventory_movements`.`inventory_part_id` = `inventory_parts`.`id`))
-          LEFT JOIN `inventory_categories` on((`inventory_categories`.`id` = `inventory_parts`.`inventory_category_id`)))
-            WHERE (isnull(`inventory_movements`.`project_id`) and isnull(`inventory_movements`.`user_to_id`))"+warehouse_query+"
-              GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`
-              ORDER BY `inventory_parts`.`part_number`) as in_movements
+  				(SELECT `inventory_parts`.`part_number` AS `part_number`, `inventory_categories`.`name` AS `category`,`inventory_parts`.`description` AS `part_description`,`inventory_movements`.`serial_number` AS `serial_number`,
+      				`inventory_parts`.`value` AS `value`,sum(`inventory_movements`.`quantity`) AS `quantity`,
+      				max(`inventory_movements`.`date`) AS `last_date`
+        		FROM (`inventory_parts`
+          		LEFT JOIN `inventory_movements` on((`inventory_movements`.`inventory_part_id` = `inventory_parts`.`id`))
+          		LEFT JOIN `inventory_categories` on((`inventory_categories`.`id` = `inventory_parts`.`inventory_category_id`)))
+            		WHERE (isnull(`inventory_movements`.`project_id`) and isnull(`inventory_movements`.`user_to_id`))"+warehouse_query+"
+              		GROUP BY `inventory_parts`.`id`,`inventory_movements`.`serial_number`
+              		ORDER BY `inventory_parts`.`part_number`) as in_movements
         ON
           (out_movements.part_number = in_movements.part_number
           AND out_movements.serial_number = in_movements.serial_number)
@@ -111,24 +112,21 @@ class InventoryController < ApplicationController
     return @stock
   end
   
-  def to_csv(arrays)
-    ic = Iconv.new(l(:general_csv_encoding), 'UTF-8')    
+  def to_csv(arrays)   
     decimal_separator = l(:general_csv_decimal_separator)
-    export = StringIO.new
-    CSV::Writer.generate(export, l(:general_csv_separator)) do |csv|
-      # csv header fields
-      headers = arrays[0]
-      csv << headers.collect {|c| begin; ic.iconv(c.to_s); rescue; c.to_s; end }
-      arrays[1].each do |fields|
-        0.upto(fields.length-1) do |i|
-          if fields[i].is_a?(Numeric)
-            fields[i] = fields[i].to_s.gsub('.', decimal_separator)
+    
+    export = CSV.generate(:col_sep => ";") do |csv|
+    	csv << arrays[0] #.collect {|header| begin; header.to_s; rescue; header.to_s; end }
+    	arrays[1].each do |row|
+      	0.upto(row.length-1) do |i|
+          if row[i].is_a?(Numeric)
+            row[i] = row[i].to_s.gsub('.', decimal_separator)
           end
         end
-        csv << fields.collect {|c| begin; ic.iconv(c.to_s); rescue; c.to_s; end }
-      end
-    end
-    export.rewind
+        csv << row #.collect {|field| begin; field.to_s.encode("UTF-8"); rescue; field.to_s; end }
+    	end
+  	end
+  	    
     return export
   end
   
@@ -163,7 +161,7 @@ class InventoryController < ApplicationController
     arrays[0] = headers
     arrays[1] = fields
     
-    send_data(to_csv(arrays).read, :type => 'text/csv; header=present', :filename => 'inventory_stock.csv')
+    send_data(to_csv(arrays), :type => 'text/csv; header=present', :filename => 'inventory_stock.csv')
   end
 
   
@@ -196,7 +194,7 @@ class InventoryController < ApplicationController
       add << " AND `inventory_movements`.`serial_number` = '#{movement.serial_number}'"
     end
     sql = ActiveRecord::Base.connection()
-    @stock = sql.execute("SELECT in_movements.part_number as part_number,
+    @stock = sql.select_one("SELECT in_movements.part_number as part_number,
           in_movements.serial_number as serial_number,
           in_movements.value,
           IFNULL(in_movements.quantity,0) as input,
@@ -224,8 +222,8 @@ class InventoryController < ApplicationController
                     ORDER BY `inventory_parts`.`part_number`) as in_movements
               ON
                 (out_movements.part_number = in_movements.part_number
-                AND out_movements.serial_number = in_movements.serial_number);").fetch_row
-    return @stock[5].to_f rescue 0
+                AND out_movements.serial_number = in_movements.serial_number);")
+    return @stock['stock'].to_f #rescue 0
   end
 
   def user_has_warehouse_permission(user_id, warehouse_id)
@@ -293,16 +291,31 @@ class InventoryController < ApplicationController
       if current_user.admin? or (user_has_warehouse_permission(current_user.id, params[:inventory_in_movement][:warehouse_to_id]) and (@inventory_in_movement.warehouse_to_id == nil ? true : user_has_warehouse_permission(current_user.id, @inventory_in_movement.warehouse_to_id)))
         unless params[:edit_in]
           @inventory_in_movement = InventoryMovement.new(params[:inventory_in_movement]) 
-          @inventory_in_movement.user_id = current_user.id
-          @inventory_in_movement.date = DateTime.now
-          if @inventory_in_movement.save
-            @inventory_in_movement = InventoryMovement.new(params[:inventory_in_movement])
-            @inventory_in_movement.inventory_part = nil
-            @inventory_in_movement.serial_number = nil
-            @inventory_in_movement.quantity = nil
-            @inventory_in_movement.value = nil
-            params[:create_in]  = true
+          
+          available_stock = nil
+          stock_ok = true
+          if @inventory_in_movement.warehouse_from_id
+          	available_stock = check_available_stock(@inventory_in_movement)
+          	if @inventory_in_movement.quantity and @inventory_in_movement.quantity <= available_stock
+          		stock_ok = false
+          	end
           end
+          
+          if stock_ok
+          	@inventory_in_movement.user_id = current_user.id
+          	@inventory_in_movement.date = DateTime.now
+          	if @inventory_in_movement.save
+            	@inventory_in_movement = InventoryMovement.new(params[:inventory_in_movement])
+            	@inventory_in_movement.inventory_part = nil
+            	@inventory_in_movement.serial_number = nil
+            	@inventory_in_movement.quantity = nil
+            	@inventory_in_movement.value = nil
+            	params[:create_in]  = true
+          	end
+          else
+          	flash[:error] = l('out_of_stock')
+          end
+          
         else
           if @inventory_in_movement.update_attributes(params[:inventory_in_movement])
             params[:edit_in] = false
@@ -325,11 +338,12 @@ class InventoryController < ApplicationController
     end
     
     if params[:inventory_out_movement]
-      if current_user.admin? or (user_has_warehouse_permission(current_user.id, params[:inventory_out_movement][:warehouse_from_id]) and (@inventory_out_movement.warehouse_from_id == nil ? true : user_has_warehouse_permission(current_user.id, @inventory_out_movement.warehouse_from_id)))
+      if current_user.admin? or (user_has_warehouse_permission(current_user.id, params[:inventory_out_movement][:warehouse_from_id]) and 
+      (@inventory_out_movement.warehouse_from_id == nil ? true : user_has_warehouse_permission(current_user.id, @inventory_out_movement.warehouse_from_id)))
         unless params[:edit_out]
           @inventory_out_movement = InventoryMovement.new(params[:inventory_out_movement]) 
           available_stock = check_available_stock(@inventory_out_movement)
-          if @inventory_out_movement.quantity <= available_stock
+          if @inventory_out_movement.quantity and @inventory_out_movement.quantity <= available_stock
             @inventory_out_movement.user_id = current_user.id
             @inventory_out_movement.date = DateTime.now
             if @inventory_out_movement.save

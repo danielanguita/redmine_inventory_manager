@@ -2,7 +2,7 @@
 <h2><%= l('inventory_categories') %></h2>
 <% if @has_permission %>
   <div class="box">
-    <h3 style='cursor:pointer;' onclick='$("ic_create_form").toggle();'>
+    <h3 style='cursor:pointer;' onclick='$("#ic_create_form").toggle();'>
     <% if params[:edit] %><%= l('Edit') %><% else %><%= l('Create') %><% end%> <%= l('Category') %>
     </h3>
     <div id='ic_create_form' <% if not params[:edit] and not params[:create] %>style='display:none;'<% end %>>

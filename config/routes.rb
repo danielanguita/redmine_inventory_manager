@@ -3,4 +3,5 @@
 
 get 'inventory', :to => 'inventory#index'
 get ':controller(/:action(/:id))'
-# post 'post/:id/vote', :to => 'polls#vote'
+post ':controller(/:action(/:id))'
+put ':controller(/:action(/:id))'

@@ -4,7 +4,7 @@
 <tr><td valign='top'>
 <% if @has_permission %>
   <div class="box">
-    <h3 style='cursor:pointer;' onclick='$("ip_create_in_form").toggle();'>
+    <h3 style='cursor:pointer;' onclick='$("#ip_create_in_form").toggle();'>
     <% if params[:edit_in] %><%= l('Edit') %><% else %><%= l('Create') %><% end%> <%= l('input_movements') %>
     </h3>
     <div id='ip_create_in_form' <% if not params[:edit_in] and not params[:create_in] %>style='display:none;'<% end %>>
@@ -56,7 +56,7 @@
 </td><td valign='top'>
 <% if @has_permission %>
   <div class="box">
-    <h3 style='cursor:pointer;' onclick='$("ip_create_out_form").toggle();'>
+    <h3 style='cursor:pointer;' onclick='$("#ip_create_out_form").toggle();'>
     <% if params[:edit_out] %><%= l('Edit') %><% else %><%= l('Create') %><% end%> <%= l('output_movements') %>
     </h3>
     <div id='ip_create_out_form' <% if not params[:edit_out] and not params[:create_out] %>style='display:none;'<% end %>>

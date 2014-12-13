@@ -1,4 +1,4 @@
-<% labelled_tabular_form_for :inventory_category, @inventory_category,
+<%= labelled_form_for :inventory_category, @inventory_category,
                              :url => {:action => 'categories', :id => @inventory_category},
                              :html => {:id => 'category-form'} do |f| %>
     <%= error_messages_for 'inventory_category' %>

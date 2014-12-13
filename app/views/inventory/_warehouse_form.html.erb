@@ -1,4 +1,4 @@
-<% labelled_tabular_form_for :inventory_warehouse, @inventory_warehouse,
+<%= labelled_form_for :inventory_warehouse, @inventory_warehouse,
                              :url => {:action => 'warehouses', :id => @inventory_warehouse},
                              :html => {:id => 'warehouse-form'} do |f| %>
     <%= error_messages_for 'inventory_warehouse' %>
