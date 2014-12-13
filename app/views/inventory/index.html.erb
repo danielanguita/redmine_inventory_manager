@@ -32,6 +32,8 @@
     <th align="right"><%= number_to_currency(total) %></th>
    </tr>
 </table>
+
+<% unless Setting.plugin_redmine_inventory_manager["hide_donate_add"] %>
 <h3 style='margin-top:40px'>Help to keep this plugin up to date!</h3>
 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank">
 <input type="hidden" name="cmd" value="_s-xclick">
@@ -40,3 +42,4 @@
 <input type="image" src="https://www.paypalobjects.com/es_XC/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal, la forma más segura y rápida de pagar en línea.">
 <img alt="" border="0" src="https://www.paypalobjects.com/es_XC/i/scr/pixel.gif" width="1" height="1">
 </form>
+<% end %>

@@ -9,5 +9,6 @@ Redmine::Plugin.register :redmine_inventory_manager do
 
   menu :top_menu, :inventory, { :controller => 'inventory', :action => 'index' }, { :caption => 'Inventory', :before => 'admin'}
   	
+  settings :default => {'empty' => true}, :partial => 'settings/rim_settings'
 end
 
