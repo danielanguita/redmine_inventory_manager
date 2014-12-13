@@ -1,4 +1,4 @@
--== Redmine Inventory Manager ==-
+-== Redmine Inventory Manager v0.9 ==-
 
 *Description*
   Take your warehouse or office inventory on the same platform of your projects.
@@ -15,5 +15,5 @@
   3.- Start your server and enjoy! :D
 	
 *Notes*
-  - Tested on Redmine 2.4, MySQL 5.5 and Rails 3.2
+  - Tested on Redmine 2.4, MySQL 5.5, Rails 3.2 and Ruby 2.0
   - Only two languages supportes for now (spanish and english)
