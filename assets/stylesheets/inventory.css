@@ -17,3 +17,13 @@
 	border-bottom:none;
 	padding:5px;
 }
+
+#parts-table{
+  font-size:14px;
+  border-collapse:collapse;
+  width:60%;
+}
+
+#parts-table th, #parts-table td{
+  text-align: center;
+}

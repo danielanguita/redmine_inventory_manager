@@ -1,20 +1,22 @@
 <%= labelled_form_for :inventory_part, @inventory_part,
-                             :url => {:action => 'parts', :id => @inventory_part},
-                             :html => {:id => 'part-form'} do |f| %>
-    <%= error_messages_for 'inventory_part' %>
-      <p>
-        <%= f.text_field :part_number, :size => 20, :required => true %>
-        <br/><%= f.text_field :manufacturer, :size => 30, :required => true %>
-        <br/><%= f.select(:inventory_category_id, @categories, {:include_blank => false}) %>
-        <br/><%= f.text_field :description, :size => 30 %>
-        <br/><%= f.text_field :where, :size => 30 %>
-        <br/><%= f.text_field :value, :size => 6 %>
-        <br/><%= f.select(:status, @statuses) %>
-        <% if params[:edit] %><input type='hidden' name='edit' value='<%= params[:edit] %>'/>
-        <% else %><input type='hidden' name='create' value='true'/><% end %>
-      </p>
-      <p>
-        <%= submit_tag l(:button_submit) %>
-        <% if params[:edit] %><input type='button' value='<%= l('Cancel') %>' onclick='location.href="parts"' /><% end %>
-      </p>
+:url => {:action => 'parts', :id => @inventory_part}, :html => {:id => 'part-form'} do |f| %>
+  <%= error_messages_for 'inventory_part' %>
+  <p>
+    <%= f.text_field :part_number, :size => 20, :required => true %>
+    <br/><%= f.text_field :manufacturer, :size => 30, :required => true %>
+    <br/><%= f.text_field :barcode, :size => 30, :required => true %>
+    <br/><%= f.select(:inventory_category_id, @categories, {:include_blank => false}) %>
+    <br/><%= f.select(:inventory_warehouse_id, @warehouses, {:include_blank => false}) %>
+    <br/><%= f.select(:document_type, @doc_types) %>
+    <br/><%= f.text_field :document, :size => 30 %>
+    <br/><%= f.text_field :description, :size => 30 %>
+    <br/><%= f.text_field :value, :size => 6, :value => "0" %>
+    <br/><%= f.select(:status, @statuses) %>
+    <% if params[:edit] %><input type='hidden' name='edit' value='<%= params[:edit] %>'/>
+    <% else %><input type='hidden' name='create' value='true'/><% end %>
+  </p>
+  <p>
+    <%= submit_tag l(:button_submit) %>
+    <% if params[:edit] %><input type='button' value='<%= l('Cancel') %>' onclick='location.href="parts"' /><% end %>
+  </p>
 <% end %>

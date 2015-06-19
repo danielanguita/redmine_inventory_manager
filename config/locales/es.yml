@@ -30,6 +30,9 @@
   field_user_to: Usuario
   field_warehouse_to: Entra a Bodega
   field_serial_number: Numero de Serie
+  field_inventory_warehouse: Almacén
+  field_barcode: Número de serie
+  field_warehouse: Almacén
   inventory_stock: Stock de Inventario
   inventory_movements: Movimientos
   inventory_parts: Productos
@@ -38,6 +41,7 @@
   inventory_providors: Proveedores
   inventory_manager: Inventario
   Edit: Editar
+  need_some: Necesita crear almacén y categoría para poder crear productos
   Create: Crear
   Delete: Eliminar
   Cancel: Cancelar

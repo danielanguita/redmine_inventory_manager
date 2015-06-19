@@ -2,26 +2,50 @@
 <h2><%= l('inventory_parts') %></h2>
 <% if @has_permission %> 
  <div class="box">
-    <h3 style='cursor:pointer;' onclick='$("#ip_create_form").toggle();'>
-    <% if params[:edit] %><%= l('Edit') %><% else %><%= l('Create') %><% end%> <%= l('Part') %>
-    </h3>
-    <div id='ip_create_form' <% if not params[:edit] and not params[:create] %>style='display:none;'<% end %>>
-      <%= render :partial => 'part_form' %>
-    </div>
+    <% if @categories.size > 0 && @warehouses.size > 0 %>
+      <h3 style='cursor:pointer;' onclick='$("#ip_create_form").toggle();'>
+        <% if params[:edit] %><%= l('Edit') %><% else %><%= l('Create') %><% end%> <%= l('Part') %>
+      </h3>
+      <div id='ip_create_form' <% if not params[:edit] and not params[:create] %>style='display:none;'<% end %>>
+        <%= render :partial => 'part_form' %>
+      </div>
+    <% else %>
+      <h3 style='cursor:pointer;'><%= l('need_some') %></h3>
+    <% end %>
   </div>
 <% end %>
 
-<table style='font-size:10px;border-collapse:collapse;'>
-  <tr><th>Id#</th><th><%= l('field_part_number') %></th><th><%= l('field_manufacturer') %></th><th><%= l('field_description') %></th><th><%= l('field_category') %></th><th><%= l('field_value') %></th><th><%= l('field_status') %></th></tr>
-  <% @parts.each do |p| %>
+<table id="parts-table">
   <tr>
-    <td><%= p.id %></td><td><%= p.part_number %></td><td><%= p.manufacturer %></td><td><%= p.description %></td>
-    <td><%= p.inventory_category.name %></td><td><%= number_to_currency(p.value) %></td>
-    <td><%= @statuses_array[p.status] %></td>
-  <% if @has_permission %> 
-    <td><%= link_to image_tag('edit.png'), 'parts?edit='+p.id.to_s %></td>
-    <td><%= link_to image_tag('delete.png'), 'parts?delete='+p.id.to_s, :confirm => l('delete_confirmation') %></td>
-  <% end %>
+    <th>Id</th>
+    <th><%= l('field_barcode') %></th>
+    <th><%= l('field_part_number') %></th>
+    <th><%= l('field_manufacturer') %></th>
+    <th><%= l('field_category') %></th>
+    <th><%= l('field_warehouse') %></th>
+    <th><%= l('field_barcode') %></th>
+    <th><%= l('field_document') %></th>
+    <th><%= l('field_description') %></th>
+    <th><%= l('field_value') %></th>
+    <th><%= l('field_status') %></th>
   </tr>
+  <% @parts.each do |p| %>
+    <tr>
+      <td><%= p.id %></td>
+      <td><%= p.barcode %></td>
+      <td><%= p.part_number %></td>
+      <td><%= p.manufacturer %></td>
+      <td><%= p.inventory_category.name %></td>
+      <td><%= p.inventory_warehouse.name %></td>
+      <td><%= p.barcode %></td>
+      <td><%= p.document %></td>
+      <td><%= p.description %></td>
+      <td><%= number_to_currency(p.value) %></td>
+      <td><%= @statuses_array[p.status] %></td>
+      <% if @has_permission %> 
+        <td><%= link_to image_tag('edit.png'), 'parts?edit='+p.id.to_s %></td>
+        <td><%= link_to image_tag('delete.png'), 'parts?delete='+p.id.to_s, :confirm => l('delete_confirmation') %></td>
+      <% end %>
+    </tr>
   <% end %>
 </table>
