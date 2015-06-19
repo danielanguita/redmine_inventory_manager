@@ -15,6 +15,6 @@ class InventoryProvidor < ActiveRecord::Base
   #t.column :contact1, :string
   
   validates_presence_of :identification, :name
-
+  has_many :inventory_parts
   
 end

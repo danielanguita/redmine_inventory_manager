@@ -31,6 +31,10 @@
   field_user_to: User
   field_warehouse_to: Enter to Warehouse
   field_serial_number: Serial Number
+  field_inventory_warehouse: Warehouse
+  field_barcode: Barcode
+  field_providor: Providor
+  field_warehouse: Warehouse
   inventory_stock: Inventory Stock
   inventory_movements: Movements
   inventory_parts: Products
@@ -38,6 +42,7 @@
   inventory_warehouses: Warehouses
   inventory_providors: Providors
   inventory_manager: Inventory
+  need_some: Need create a warehouse and a category to allow create products
   Edit: Edit
   Create: Create
   Delete: Delete
