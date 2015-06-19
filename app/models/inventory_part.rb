@@ -13,7 +13,8 @@ class InventoryPart < ActiveRecord::Base
   has_many :inventory_movements
   belongs_to :inventory_category
   belongs_to :inventory_warehouse
-  
+  belongs_to :inventory_providor
+
   validates_presence_of :part_number, :manufacturer, :inventory_category, :value, :status, :inventory_warehouse
   validates_uniqueness_of :part_number
 

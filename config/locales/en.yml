@@ -33,6 +33,7 @@
   field_serial_number: Serial Number
   field_inventory_warehouse: Warehouse
   field_barcode: Barcode
+  field_providor: Providor
   field_warehouse: Warehouse
   inventory_stock: Inventory Stock
   inventory_movements: Movements

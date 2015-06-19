@@ -424,6 +424,7 @@ class InventoryController < ApplicationController
 
     
   def parts
+    @providors = InventoryProvidor.find(:all, :order => 'name').map {|p| [p.name,p.id]}
     @doc_types = { l('invoice') => 1, l('ticket') => 2, l('proforma-invoice') => 3, l("waybill") => 4, l("inventory") => 5}
     @categories = InventoryCategory.find(:all, :order => 'name').map {|c| [c.name,c.id]}
     @warehouses = InventoryWarehouse.find(:all, :order => 'name').map {|w| [w.name,w.id]}

@@ -7,6 +7,7 @@
     <br/><%= f.text_field :barcode, :size => 30, :required => true %>
     <br/><%= f.select(:inventory_category_id, @categories, {:include_blank => false}) %>
     <br/><%= f.select(:inventory_warehouse_id, @warehouses, {:include_blank => false}) %>
+    <br/><%= f.select(:inventory_providor_id, @providors, {:include_blank => true}) %>
     <br/><%= f.select(:document_type, @doc_types) %>
     <br/><%= f.text_field :document, :size => 30 %>
     <br/><%= f.text_field :description, :size => 30 %>

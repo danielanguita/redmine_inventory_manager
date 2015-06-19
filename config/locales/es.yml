@@ -30,6 +30,7 @@
   field_user_to: Usuario
   field_warehouse_to: Entra a almacén
   field_serial_number: Numero de Serie
+  field_providor: Proveedor
   field_inventory_warehouse: Almacén
   field_barcode: Número de serie
   field_warehouse: Almacén
