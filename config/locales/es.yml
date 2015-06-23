@@ -26,7 +26,6 @@
   field_document_type: Tipo Documento
   field_location: Localización
   field_user_from: Usuario
-  field_warehouse_from: Almacén
   field_user_to: Usuario
   field_warehouse_to: Entra a almacén
   field_serial_number: Numero de Serie
@@ -34,6 +33,8 @@
   field_inventory_warehouse: Almacén
   field_barcode: Número de serie
   field_warehouse: Almacén
+  field_inventory_providor_from: Proveedor
+  field_inventory_providor_to: Proveedor
   inventory_stock: Stock de Inventario
   inventory_movements: Movimientos
   inventory_parts: Productos
@@ -63,6 +64,7 @@
   permission_denied: No tienes permiso para realizar cambios en ese almacén
   field_short_part_number: Producto
   From: De
+  Selecciona: Elige una opción
   To: To
   Date: Fecha
   out_movement_list: Lista de Salidas
