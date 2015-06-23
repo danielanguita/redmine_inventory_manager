@@ -1,19 +1,72 @@
-#inventory-menu{
-	border-bottom:2px solid #6692CC;
-	margin: 10px -10px 0px -10px;
+#inventory-menu { bottom: 0px;  left:6px; margin-right: -500px;}
+#inventory-menu ul {margin: 0;  padding: 0;}
+#inventory-menu li {
+  float:left;
+  list-style-type:none;
+  margin: 0px 2px 0px 0px;
+  padding: 0px 0px 0px 0px;
+  white-space:nowrap;
+}
+#inventory-menu li a {
+  display: block;
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  margin: 0;
+  padding: 4px 10px 4px 10px;
+}
+#inventory-menu li a:hover {background:#759FCF; color:#fff;}
+#inventory-menu li a.selected, #inventory-menu li a.selected:hover {background:#fff; color:#555;}
+
+#inventory-menu {
+	left: 0px;
+	height: 40px;
+/*	overflow: hidden;*/
 }
 
-#inventory-menu ul{
-	padding:0;
-	margin:0;
-	margin-bottom:5px;
+#inventory-menu li a {
+	background-color: transparent !important;
+	display: block;
+	float: left;
+	padding: 6px 12px;
+	color: #444;
+	text-shadow: 0px 1px #DDD;
+	font-weight: bold;
+	text-decoration: none;
+	border-radius: 6px;
+	-moz-border-radius: 6px;
+	-webkit-border-radius: 6px;
 }
 
-#inventory-menu ul li{
-	display: inline;
-	list-style-type: none;
-	padding-right: 20px;
-	border:2px solid #6692CC;
-	border-bottom:none;
-	padding:5px;
+#inventory-menu li a.selected, #inventory-menu li a.selected:hover {
+	box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.10);
+	-moz-box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.10);
+	-webkit-box-shadow: inset 1px 1px 3px rgba(0, 0, 0, 0.10);
+	padding: 5px 12px;
+	text-shadow: 0px -1px #666;
+	color: #F0F0F0;
+	border: 1px solid #666;
+	border-right: none;
+	border-bottom: none;
+	background: url(../images/selected-tab.png) repeat-x;
+}
+
+#inventory-menu li a:hover {background-color:transparent;color: #000;}
+
+/* Menu */
+#inventory-menu li a { background-color: #507AAA; font-weight: bold;}
+#inventory-menu li a:hover { background: #507AAA; text-decoration: underline; }
+#inventory-menu li a.selected, #inventory-menu li a.selected:hover { background-color:#EEEEEE; }
+#inventory-menu ul { margin-top: 7px; padding-left: 15px;}
+
+tr.inventory-warning { background: #ffc4c4; }
+
+#parts-table{
+  font-size:14px;
+  border-collapse:collapse;
+  width:60%;
+}
+
+#parts-table th, #parts-table td{
+  text-align: center;
 }

@@ -6,7 +6,7 @@
   field_address0: Dirección
   field_address1: Dirección 2
   field_city: Ciudad
-  field_state: Comuna
+  field_state: Comunidad 
   field_country: País
   field_phone0: Teléfono
   field_phone1: Teléfono 2
@@ -24,40 +24,47 @@
   field_squantity: Cant.
   field_document: Documento
   field_document_type: Tipo Documento
-  field_location: Locación
+  field_location: Localización
   field_user_from: Usuario
-  field_warehouse_from: Bodega
   field_user_to: Usuario
-  field_warehouse_to: Entra a Bodega
+  field_warehouse_to: Entra a almacén
   field_serial_number: Numero de Serie
+  field_providor: Proveedor
+  field_inventory_warehouse: Almacén
+  field_barcode: Número de serie
+  field_warehouse: Almacén
+  field_inventory_providor_from: Proveedor
+  field_inventory_providor_to: Proveedor
   inventory_stock: Stock de Inventario
   inventory_movements: Movimientos
   inventory_parts: Productos
   inventory_categories: Categorías
-  inventory_warehouses: Bodegas
+  inventory_warehouses: Almacenes
   inventory_providors: Proveedores
   inventory_manager: Inventario
   Edit: Editar
+  need_some: Necesita crear almacén y categoría para poder crear productos
   Create: Crear
   Delete: Eliminar
   Cancel: Cancelar
   input_movements: Movimiento de Entrada
   output_movements: Movimiento de Salida
   User: Usuario
-  Project: Projecto
+  Project: Proyecto
   Providor: Proveedor
-  Warehouse: Bodega
+  Warehouse: Almacén
   Part: Producto
   Category: Categoría
-  all_warehouses: Todas las Bodegas
+  all_warehouses: Todos los almacenes
   delete_confirmation: Esta seguro que desea ELIMINAR el registro?
   cant_delete_register: No es posible eliminar el registro. Probablemente debe estar relacionado con otro.
   out_of_stock: No existe stock suficiente para realizar el movimiento de salida.
   field_where: ¿Donde se guarda?
-  field_user_manager: Administrador de Bodega
-  permission_denied: No tienes permiso para realizar cambios en esa Bodega
+  field_user_manager: Administrador de almacén
+  permission_denied: No tienes permiso para realizar cambios en ese almacén
   field_short_part_number: Producto
   From: De
+  Selecciona: Elige una opción
   To: To
   Date: Fecha
   out_movement_list: Lista de Salidas
@@ -69,7 +76,7 @@
   stock: Stock
   last_movement: Último Movimiento
   total: Total
-  inventory_value: Inventario Valorizado
+  inventory_value: Valor del inventario
   invoice: Factura
   proforma-invoice: Factura Proforma
   waybill: Guía de Despacho
