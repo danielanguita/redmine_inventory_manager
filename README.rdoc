@@ -1,4 +1,4 @@
--== Redmine Inventory Manager v0.9 ==-
+
 
 *Description*
   Take your warehouse or office inventory on the same platform of your projects.
