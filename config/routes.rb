@@ -2,6 +2,7 @@
 # See: http://guides.rubyonrails.org/routing.html
 
 get 'inventory', :to => 'inventory#index'
-get ':controller(/:action(/:id))'
-post ':controller(/:action(/:id))'
-put ':controller(/:action(/:id))'
+
+get 'inventory(/:action(/:id))', controller: :inventory
+post 'inventory(/:action(/:id))', controller: :inventory
+put 'inventory(/:action(/:id))', controller: :inventory
