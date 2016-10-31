@@ -1,7 +1,7 @@
 
 
 *Description*
-  Take your warehouse or office inventory on the same platform of your projects.
+  Take your warehouse or office inventory on the same platform of your projects. If you want a feature you can add issue. 
 
 *Instalation*
   1.- Install Redmine (http://www.redmine.org/wiki/1/RedmineInstall)
@@ -15,3 +15,8 @@
 *Notes*
   - upgraded to support redmine 3.2x
   - Only two languages supportes for now (spanish and english)
+  
+  *Contributors*
+  - Daniel Anguita @danielanguita
+  - Imanol Alvarez @w0www
+  - bluenevus @bluenevus
