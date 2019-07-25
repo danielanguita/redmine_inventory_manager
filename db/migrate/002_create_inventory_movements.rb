@@ -10,7 +10,7 @@ class CreateInventoryMovements < ActiveRecord::Migration[5.2]
       t.column :project_id, :string
       t.column :other_destiny, :string
       t.column :date, :datetime
-      t.column :user_id, :bigint
+      t.column :user_id, :int
     end
   end
 

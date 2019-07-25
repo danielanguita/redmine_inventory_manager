@@ -15,8 +15,8 @@ class KeysAndModifications < ActiveRecord::Migration[5.2]
             UNIQUE INDEX `uk_inventory_providor_identification`(`identification`);
         SQL
           
-      add_column :inventory_movements, :user_from_id, :bigint
-      add_column :inventory_movements, :user_to_id, :bigint
+      add_column :inventory_movements, :user_from_id, :int
+      add_column :inventory_movements, :user_to_id, :int
       add_column :inventory_movements, :warehouse_to_id, :bigint
       add_column :inventory_movements, :warehouse_from_id, :bigint
       add_column :inventory_movements, :serial_number, :string
