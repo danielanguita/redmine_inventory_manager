@@ -70,11 +70,11 @@ class KeysAndModifications < ActiveRecord::Migration[5.2]
       execute "ALTER TABLE `inventory_categories` DROP INDEX `uk_inventory_category_name`"
       execute "ALTER TABLE `inventory_providors` DROP INDEX `uk_inventory_providor_identification`"
 
-      execute "ALTER TABLE `inventory_movements` DROP INDEX `fk_inventory_movements_user`"
-      execute "ALTER TABLE `inventory_movements` DROP INDEX `fk_inventory_movements_user_from`"
-      execute "ALTER TABLE `inventory_movements` DROP INDEX `fk_inventory_movements_user_to`"
-      execute "ALTER TABLE `inventory_movements` DROP INDEX `fk_inventory_movement_warehouse_from`"
-      execute "ALTER TABLE `inventory_movements` DROP INDEX `fk_inventory_movement_warehouse_to`"
+      execute "ALTER TABLE `inventory_movements` DROP FOREIGN KEY `fk_inventory_movement_user`"
+      execute "ALTER TABLE `inventory_movements` DROP FOREIGN KEY `fk_inventory_movement_user_from`"
+      execute "ALTER TABLE `inventory_movements` DROP FOREIGN KEY `fk_inventory_movement_user_to`"
+      execute "ALTER TABLE `inventory_movements` DROP FOREIGN KEY `fk_inventory_movement_warehouse_from`"
+      execute "ALTER TABLE `inventory_movements` DROP FOREIGN KEY `fk_inventory_movement_warehouse_to`"
       
       remove_column :inventory_movements, :user_from_id
       remove_column :inventory_movements, :user_to_id
