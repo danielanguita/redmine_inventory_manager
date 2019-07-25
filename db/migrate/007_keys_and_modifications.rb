@@ -1,4 +1,4 @@
-class KeysAndModifications < ActiveRecord::Migration
+class KeysAndModifications < ActiveRecord::Migration[5.2]
     def self.up
       execute <<-SQL
         ALTER TABLE `inventory_parts` ADD
@@ -15,10 +15,10 @@ class KeysAndModifications < ActiveRecord::Migration
             UNIQUE INDEX `uk_inventory_providor_identification`(`identification`);
         SQL
           
-      add_column :inventory_movements, :user_from_id, :integer
-      add_column :inventory_movements, :user_to_id, :integer
-      add_column :inventory_movements, :warehouse_to_id, :integer
-      add_column :inventory_movements, :warehouse_from_id, :integer
+      add_column :inventory_movements, :user_from_id, :bigint
+      add_column :inventory_movements, :user_to_id, :bigint
+      add_column :inventory_movements, :warehouse_to_id, :bigint
+      add_column :inventory_movements, :warehouse_from_id, :bigint
       add_column :inventory_movements, :serial_number, :string
         
       execute <<-SQL

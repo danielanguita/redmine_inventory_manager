@@ -1,4 +1,4 @@
-class CreateInventoryProvidors < ActiveRecord::Migration
+class CreateInventoryProvidors < ActiveRecord::Migration[5.2]
   def self.up
     create_table :inventory_providors do |t|
       t.column :identification, :string
