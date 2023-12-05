@@ -1,5 +1,5 @@
 require 'csv'
-class InventoryController < ApplicationController
+class InventoryController < ApplicationController[5.0]
 
 	unloadable
 
