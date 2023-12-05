@@ -22,3 +22,5 @@
   - Daniel Anguita @danielanguita
   - Imanol Alvarez @w0www
   - bluenevus @bluenevus
+
+  Agrego a db/migrate y a controllers [5.0] para la version de redmine en uso.
