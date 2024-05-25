@@ -4,7 +4,7 @@ class InventoryController < ApplicationController
 	unloadable
 
   def reports
-    @warehouses = InventoryWarehouse.find(:all, :order => 'name').map {|w| [w.name, w.id]}
+    @warehouses = InventoryWarehouse.order("name ASC").all.map {|w| [w.name, w.id]}
     @warehouses += [l('all_warehouses')]
     
     unless params[:warehouse]
@@ -29,9 +29,7 @@ class InventoryController < ApplicationController
     end
     
     if params[:id] == "input_invoice"
-      @movements = InventoryMovement.find(:all, 
-      	:conditions => "document is not null and document != '' and document_type <= 3"+add, 
-      	:order => 'document')
+      @movements = InventoryMovement.where("document is not null and document != '' and document_type <= 3"+add).order('document ASC')
       
       headers = [l(:From),l(:field_document),l(:field_document_type),l(:field_category),l(:field_short_part_number),
         l(:field_serial_number), l(:field_squantity), l(:field_value),l(:total),l(:Date)]
@@ -59,7 +57,7 @@ class InventoryController < ApplicationController
   
 
   def index
-    @warehouses = InventoryWarehouse.find(:all, :order => 'name').map {|w| [w.name, w.id]}
+    @warehouses = InventoryWarehouse.order("name ASC").all.map {|w| [w.name, w.id]}
     @warehouses += [l('all_warehouses')]
     
     add = ""
@@ -178,7 +176,7 @@ class InventoryController < ApplicationController
   def ajax_get_part_info
     out = []
     if params[:part_number]
-      if part = InventoryPart.find(:first, :conditions => "part_number = '"+params[:part_number]+"'")
+      if part = InventoryPart.where("part_number = '"+params[:part_number]+"'").first
         out =  part.to_json
       end
     end
@@ -241,11 +239,11 @@ class InventoryController < ApplicationController
   
 
   def movements
-    @parts = InventoryPart.find(:all, :order => 'part_number').map {|p| [p.part_number,p.id]}
-    @providors = InventoryProvidor.find(:all, :order => 'name').map {|p| [p.name,p.id]}
-    @inv_projects = Project.find(:all, :order => 'name').map {|p| [p.name,p.id]}
-    @users = User.find(:all, :conditions => 'status=1' , :order => 'lastname ASC, firstname ASC').map {|u| [u.lastname+" "+u.firstname, u.id]}
-    @warehouses = InventoryWarehouse.find(:all, :order => 'name').map {|w| [w.name, w.id]}
+    @parts = InventoryPart.order("part_number ASC").all.map {|p| [p.part_number,p.id]}
+    @providors = InventoryProvidor.order("name ASC").all.map {|p| [p.name,p.id]}
+    @inv_projects = Project.order('name ASC').all.map {|p| [p.name,p.id]}
+    @users = User.where('status=1').order('lastname ASC, firstname ASC').map {|u| [u.lastname+" "+u.firstname, u.id]}
+    @warehouses = InventoryWarehouse.order("name ASC").all.map {|w| [w.name, w.id]}
     @from_options = {l('User') => 'user_from_id', l('Warehouse') => 'warehouse_from_id', l('Providor') => 'inventory_providor_id'}
     @to_options = {l('User') => 'user_to_id', l('Project') => 'project_id'}
     @doc_types = { l('invoice') => 1, l('ticket') => 2, l('proforma-invoice') => 3, l("waybill") => 4, l("inventory") => 5}
@@ -290,7 +288,7 @@ class InventoryController < ApplicationController
     if params[:inventory_in_movement]
       if current_user.admin? or (user_has_warehouse_permission(current_user.id, params[:inventory_in_movement][:warehouse_to_id]) and (@inventory_in_movement.warehouse_to_id == nil ? true : user_has_warehouse_permission(current_user.id, @inventory_in_movement.warehouse_to_id)))
         unless params[:edit_in]
-          @inventory_in_movement = InventoryMovement.new(params[:inventory_in_movement]) 
+          @inventory_in_movement = InventoryMovement.new(params[:inventory_in_movement].permit!)
           
           available_stock = nil
           stock_ok = true
@@ -305,7 +303,7 @@ class InventoryController < ApplicationController
           	@inventory_in_movement.user_id = current_user.id
           	@inventory_in_movement.date = DateTime.now
           	if @inventory_in_movement.save
-            	@inventory_in_movement = InventoryMovement.new(params[:inventory_in_movement])
+            	@inventory_in_movement = InventoryMovement.new(params[:inventory_in_movement].permit!)
             	@inventory_in_movement.inventory_part = nil
             	@inventory_in_movement.serial_number = nil
             	@inventory_in_movement.quantity = nil
@@ -317,7 +315,7 @@ class InventoryController < ApplicationController
           end
           
         else
-          if @inventory_in_movement.update_attributes(params[:inventory_in_movement])
+          if @inventory_in_movement.update_attributes(params[:inventory_in_movement].permit!)
             params[:edit_in] = false
           end
         end
@@ -341,13 +339,13 @@ class InventoryController < ApplicationController
       if current_user.admin? or (user_has_warehouse_permission(current_user.id, params[:inventory_out_movement][:warehouse_from_id]) and 
       (@inventory_out_movement.warehouse_from_id == nil ? true : user_has_warehouse_permission(current_user.id, @inventory_out_movement.warehouse_from_id)))
         unless params[:edit_out]
-          @inventory_out_movement = InventoryMovement.new(params[:inventory_out_movement]) 
+          @inventory_out_movement = InventoryMovement.new(params[:inventory_out_movement].permit!)
           available_stock = check_available_stock(@inventory_out_movement)
           if @inventory_out_movement.quantity and @inventory_out_movement.quantity <= available_stock
             @inventory_out_movement.user_id = current_user.id
             @inventory_out_movement.date = DateTime.now
             if @inventory_out_movement.save
-              @inventory_out_movement = InventoryMovement.new(params[:inventory_out_movement])
+              @inventory_out_movement = InventoryMovement.new(params[:inventory_out_movement].permit!)
               @inventory_out_movement.inventory_part = nil
               @inventory_out_movement.serial_number = nil
               @inventory_out_movement.quantity = nil
@@ -366,7 +364,7 @@ class InventoryController < ApplicationController
             end
           end
           if ok
-            if @inventory_out_movement.update_attributes(params[:inventory_out_movement])
+            if @inventory_out_movement.update_attributes(params[:inventory_out_movement].permit!)
               params[:edit_out] = false
             end
           else
@@ -378,13 +376,14 @@ class InventoryController < ApplicationController
       end
     end
 
-    @movements_in = InventoryMovement.find(:all, :conditions => "project_id is null and user_to_id is null", :order => "date DESC")
-    @movements_out = InventoryMovement.find(:all, :conditions => "inventory_providor_id is null and user_from_id is null and (project_id is not null or user_to_id is not null)", :order => "date DESC")
+    @movements_in = InventoryMovement.where("project_id is null and user_to_id is null").order("date DESC")
+    @movements_out = InventoryMovement.where("inventory_providor_id is null and user_from_id is null and (project_id is not null or user_to_id is not null)").order("date DESC")
   end
 
   
   
   def categories
+    @inventory_category = InventoryCategory.new
     current_user = find_current_user
     @has_permission = current_user.admin? || user_has_warehouse_permission(current_user.id, nil)
     
@@ -405,7 +404,7 @@ class InventoryController < ApplicationController
         end
         
         if params[:inventory_category]
-          @inventory_category.update_attributes(params[:inventory_category]) 
+          @inventory_category.update_attributes(params[:inventory_category].permit!)
           if @inventory_category.save
             @inventory_category = InventoryCategory.new
             params[:edit] = false
@@ -418,13 +417,14 @@ class InventoryController < ApplicationController
       end
     end
     
-    @categories = InventoryCategory.find(:all)
+    @categories = InventoryCategory.all
   end
 
 
     
   def parts
-    @categories = InventoryCategory.find(:all, :order => 'name').map {|c| [c.name,c.id]}
+    @inventory_part  = InventoryPart.new
+    @categories = InventoryCategory.order("name ASC").all.map {|c| [c.name,c.id]}
     @statuses = { l('active') => 1, l("obsolet") => 2, l('discontinued') => 3}
     @statuses_array = ['',l('active'),l("obsolet"),l('discontinued')]
     current_user = find_current_user
@@ -446,7 +446,7 @@ class InventoryController < ApplicationController
         end
         
         if params[:inventory_part]
-          @inventory_part.update_attributes(params[:inventory_part]) 
+          @inventory_part.update_attributes(params[:inventory_part].permit!)
           if @inventory_part.save
             @inventory_part = InventoryPart.new
             params[:edit] = false
@@ -458,10 +458,11 @@ class InventoryController < ApplicationController
         flash[:error] = l('permission_denied')
       end
     end
-    @parts = InventoryPart.find(:all)
+    @parts = InventoryPart.all
   end
   
   def providors
+    @inventory_providor = InventoryProvidor.new
     current_user = find_current_user
     @has_permission = current_user.admin? || user_has_warehouse_permission(current_user.id, nil)
     if params[:delete] or params[:edit] or params[:inventory_providor]
@@ -481,7 +482,7 @@ class InventoryController < ApplicationController
         end
         
         if params[:inventory_providor]
-          @inventory_providor.update_attributes(params[:inventory_providor]) 
+          @inventory_providor.update_attributes(params[:inventory_providor].permit!)
           if @inventory_providor.save
             @inventory_providor = InventoryProvidor.new
             params[:edit] = false
@@ -495,11 +496,12 @@ class InventoryController < ApplicationController
     end
     
     
-    @providors = InventoryProvidor.find(:all)
+    @providors = InventoryProvidor.all
   end
   
   def warehouses
-    @users = User.find(:all, :conditions => 'status=1' , :order => 'lastname ASC, firstname ASC').map {|u| [u.lastname+" "+u.firstname, u.id]}
+    @inventory_warehouse = InventoryWarehouse.new
+    @users = User.where('status=1').order('lastname ASC, firstname ASC').map{|u| [u.lastname+" "+u.firstname, u.id]}
     @has_permission = find_current_user.admin?
     if params[:delete] or params[:edit] or params[:inventory_warehouse]
       if @has_permission
@@ -517,7 +519,7 @@ class InventoryController < ApplicationController
         end
           
         if params[:inventory_warehouse]
-          @inventory_warehouse.update_attributes(params[:inventory_warehouse]) 
+          @inventory_warehouse.update_attributes(params[:inventory_warehouse].permit!)
           if @inventory_warehouse.save
             @inventory_warehouse = InventoryWarehouse.new
             params[:edit] = false
@@ -529,7 +531,7 @@ class InventoryController < ApplicationController
       end
     end
     
-    @warehouses = InventoryWarehouse.find(:all)
+    @warehouses = InventoryWarehouse.all
   end
 
 
