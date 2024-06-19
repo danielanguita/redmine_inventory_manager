@@ -315,7 +315,7 @@ class InventoryController < ApplicationController
           end
           
         else
-          if @inventory_in_movement.update_attributes(params[:inventory_in_movement].permit!)
+          if @inventory_in_movement.update(params[:inventory_in_movement].permit!)
             params[:edit_in] = false
           end
         end
@@ -364,7 +364,7 @@ class InventoryController < ApplicationController
             end
           end
           if ok
-            if @inventory_out_movement.update_attributes(params[:inventory_out_movement].permit!)
+            if @inventory_out_movement.update(params[:inventory_out_movement].permit!)
               params[:edit_out] = false
             end
           else
@@ -404,7 +404,7 @@ class InventoryController < ApplicationController
         end
         
         if params[:inventory_category]
-          @inventory_category.update_attributes(params[:inventory_category].permit!)
+          @inventory_category.update(params[:inventory_category].permit!)
           if @inventory_category.save
             @inventory_category = InventoryCategory.new
             params[:edit] = false
@@ -446,7 +446,7 @@ class InventoryController < ApplicationController
         end
         
         if params[:inventory_part]
-          @inventory_part.update_attributes(params[:inventory_part].permit!)
+          @inventory_part.update(params[:inventory_part].permit!)
           if @inventory_part.save
             @inventory_part = InventoryPart.new
             params[:edit] = false
@@ -482,7 +482,7 @@ class InventoryController < ApplicationController
         end
         
         if params[:inventory_providor]
-          @inventory_providor.update_attributes(params[:inventory_providor].permit!)
+          @inventory_providor.update(params[:inventory_providor].permit!)
           if @inventory_providor.save
             @inventory_providor = InventoryProvidor.new
             params[:edit] = false
@@ -519,7 +519,7 @@ class InventoryController < ApplicationController
         end
           
         if params[:inventory_warehouse]
-          @inventory_warehouse.update_attributes(params[:inventory_warehouse].permit!)
+          @inventory_warehouse.update(params[:inventory_warehouse].permit!)
           if @inventory_warehouse.save
             @inventory_warehouse = InventoryWarehouse.new
             params[:edit] = false
