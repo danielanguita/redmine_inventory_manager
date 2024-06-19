@@ -1,4 +1,4 @@
-class ForeignKeysAndViews < ActiveRecord::Migration[5.0]
+class ForeignKeysAndViews < ActiveRecord::Migration[5.1]
     def self.up
         execute <<-SQL
           ALTER TABLE `inventory_movements` ADD
