@@ -222,8 +222,10 @@ class InventoryController < ApplicationController
                 (out_movements.part_number = in_movements.part_number
                 AND out_movements.serial_number = in_movements.serial_number);")
     # Uso de safe navigation operator (&.)
-    return @stock&.fetch('stock', 0).to_f || 0
-
+    return 0 if @stock.nil? || !@stock.key?('stock')
+    @stock['stock'].to_f
+  rescue
+    0
   end
 
   def user_has_warehouse_permission(user_id, warehouse_id)
@@ -449,7 +451,7 @@ class InventoryController < ApplicationController
         if params[:inventory_part]
           # @inventory_part.update(params[:inventory_part].permit!)
           # Modificaciones para permitir los cambios en objetos ya creados
-          @inventory_part.update(params[:inventory_part].permit!)
+          @inventory_part.update(params[:inventory_part])
           if @inventory_part.save
             @inventory_part = InventoryPart.new
             params[:edit] = false
