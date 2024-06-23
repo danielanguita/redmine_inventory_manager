@@ -6,3 +6,16 @@ get 'inventory', :to => 'inventory#index'
 get 'inventory(/:action(/:id))', controller: :inventory
 post 'inventory(/:action(/:id))', controller: :inventory
 put 'inventory(/:action(/:id))', controller: :inventory
+
+resources :inventory_categories, path: 'inventory/categories'
+get 'inventory/categories/:id', to: 'inventory#categories'
+
+# get 'inventory(/categories:action(/:id))', controller: :inventory
+# post 'inventory(/categories:action(/:id))', controller: :inventory
+# put 'inventory(/categories:action(/:id))', controller: :inventory
+
+resources :inventory_parts, path: 'inventory/parts'
+get 'inventory/parts/:id', to: 'inventory#parts'
+# get 'inventory(/parts:action(/:id))', controller: :inventory
+# post 'inventory(/parts:action(/:id))', controller: :inventory
+# put 'inventory(/parts:action(/:id))', controller: :inventory
