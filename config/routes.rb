@@ -3,7 +3,12 @@
 
 get 'inventory', to: 'inventory#index'
 
-get 'inventory(/:action(/:id))', controller: :inventory
-post 'inventory(/:action(/:id))', controller: :inventory
-put 'inventory(/:action(/:id))', controller: :inventory
-patch 'inventory(/:action(/:id))', controller: :inventory  # Agregar esta línea
+resources :inventory, only: [:index] do
+  collection do
+    get 'providors'
+    post 'providors'
+    put 'providors/:id', to: 'inventory#providors'
+    patch 'providors/:id', to: 'inventory#providors'
+  end
+end
+
