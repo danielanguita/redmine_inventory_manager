@@ -1,5 +1,6 @@
 #### THIS PLUG IS IN DEVELOPMENT. IF YOU NEED ANY FUNCTIONALITY RELATED TO THIS PLUGIN ADD IT IN THE ISSUES
 
+Updated for redmine 5.0
 
 *Description*
   Take your warehouse or office inventory on the same platform of your projects. 
