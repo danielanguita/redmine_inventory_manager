@@ -1,4 +1,4 @@
-class KeysAndModifications < ActiveRecord::Migration
+class KeysAndModifications < ActiveRecord::Migration[5.2]
     def self.up
       execute <<-SQL
         ALTER TABLE `inventory_parts` ADD
@@ -15,10 +15,10 @@ class KeysAndModifications < ActiveRecord::Migration
             UNIQUE INDEX `uk_inventory_providor_identification`(`identification`);
         SQL
           
-      add_column :inventory_movements, :user_from_id, :integer
-      add_column :inventory_movements, :user_to_id, :integer
-      add_column :inventory_movements, :warehouse_to_id, :integer
-      add_column :inventory_movements, :warehouse_from_id, :integer
+      add_column :inventory_movements, :user_from_id, :int
+      add_column :inventory_movements, :user_to_id, :int
+      add_column :inventory_movements, :warehouse_to_id, :bigint
+      add_column :inventory_movements, :warehouse_from_id, :bigint
       add_column :inventory_movements, :serial_number, :string
         
       execute <<-SQL
@@ -70,11 +70,11 @@ class KeysAndModifications < ActiveRecord::Migration
       execute "ALTER TABLE `inventory_categories` DROP INDEX `uk_inventory_category_name`"
       execute "ALTER TABLE `inventory_providors` DROP INDEX `uk_inventory_providor_identification`"
 
-      execute "ALTER TABLE `inventory_movements` DROP INDEX `fk_inventory_movements_user`"
-      execute "ALTER TABLE `inventory_movements` DROP INDEX `fk_inventory_movements_user_from`"
-      execute "ALTER TABLE `inventory_movements` DROP INDEX `fk_inventory_movements_user_to`"
-      execute "ALTER TABLE `inventory_movements` DROP INDEX `fk_inventory_movement_warehouse_from`"
-      execute "ALTER TABLE `inventory_movements` DROP INDEX `fk_inventory_movement_warehouse_to`"
+      execute "ALTER TABLE `inventory_movements` DROP FOREIGN KEY `fk_inventory_movement_user`"
+      execute "ALTER TABLE `inventory_movements` DROP FOREIGN KEY `fk_inventory_movement_user_from`"
+      execute "ALTER TABLE `inventory_movements` DROP FOREIGN KEY `fk_inventory_movement_user_to`"
+      execute "ALTER TABLE `inventory_movements` DROP FOREIGN KEY `fk_inventory_movement_warehouse_from`"
+      execute "ALTER TABLE `inventory_movements` DROP FOREIGN KEY `fk_inventory_movement_warehouse_to`"
       
       remove_column :inventory_movements, :user_from_id
       remove_column :inventory_movements, :user_to_id

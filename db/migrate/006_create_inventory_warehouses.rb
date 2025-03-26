@@ -1,4 +1,4 @@
-class CreateInventoryWarehouses < ActiveRecord::Migration
+class CreateInventoryWarehouses < ActiveRecord::Migration[5.2]
   def self.up
     create_table :inventory_warehouses do |t|
       t.column :name, :string
