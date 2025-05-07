@@ -15,12 +15,13 @@
   3.- Start your server and enjoy! :D
 	
 *Notes*
-  - upgraded to support redmine 3.2x
+  - upgraded to support redmine 5.1
   - Only two languages supportes for now (spanish and english)
   
   *Contributors*
   - Daniel Anguita @danielanguita
   - Imanol Alvarez @w0www
   - bluenevus @bluenevus
+  - Emiliano Baum @emilianobaum
 
-Agrego a db/migrate y a controllers [5.0] para la version de redmine en uso.
+Agrego a db/migrate y a controllers [5.1] para la version de redmine en uso.
