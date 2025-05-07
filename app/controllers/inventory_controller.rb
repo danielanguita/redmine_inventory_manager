@@ -221,7 +221,11 @@ class InventoryController < ApplicationController
               ON
                 (out_movements.part_number = in_movements.part_number
                 AND out_movements.serial_number = in_movements.serial_number);")
-    return @stock['stock'].to_f #rescue 0
+    # Uso de safe navigation operator (&.)
+    return 0 if @stock.nil? || !@stock.key?('stock')
+    @stock['stock'].to_f
+  rescue
+    0
   end
 
   def user_has_warehouse_permission(user_id, warehouse_id)
@@ -381,7 +385,6 @@ class InventoryController < ApplicationController
   end
 
   
-  
   def categories
     @inventory_category = InventoryCategory.new
     current_user = find_current_user
@@ -404,7 +407,9 @@ class InventoryController < ApplicationController
         end
         
         if params[:inventory_category]
-          @inventory_category.update(params[:inventory_category].permit!)
+          # @inventory_category.update(params[:inventory_category].permit!)
+          # Modificaciones para permitir los cambios
+          @inventory_category.update(params[:inventory_category])
           if @inventory_category.save
             @inventory_category = InventoryCategory.new
             params[:edit] = false
@@ -420,8 +425,6 @@ class InventoryController < ApplicationController
     @categories = InventoryCategory.all
   end
 
-
-    
   def parts
     @inventory_part  = InventoryPart.new
     @categories = InventoryCategory.order("name ASC").all.map {|c| [c.name,c.id]}
@@ -446,7 +449,9 @@ class InventoryController < ApplicationController
         end
         
         if params[:inventory_part]
-          @inventory_part.update(params[:inventory_part].permit!)
+          # @inventory_part.update(params[:inventory_part].permit!)
+          # Modificaciones para permitir los cambios en objetos ya creados
+          @inventory_part.update(params[:inventory_part])
           if @inventory_part.save
             @inventory_part = InventoryPart.new
             params[:edit] = false
